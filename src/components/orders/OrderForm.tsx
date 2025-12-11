@@ -113,13 +113,13 @@ export function OrderForm({ onClose, onSuccess }: OrderFormProps) {
       });
 
       addOrder(order);
-      showToast(`Заказ #${String(order.orderNumber).padStart(3, '0')} создан`, 'success');
+      showToast(`Заказ #${String(order.orderNumber).padStart(3, '0')} создан`, { type: 'success' });
       onSuccess?.();
       onClose();
     } catch (error) {
       showToast(
         error instanceof Error ? error.message : 'Ошибка создания заказа',
-        'error'
+        { type: 'error' }
       );
     } finally {
       setIsSubmitting(false);
