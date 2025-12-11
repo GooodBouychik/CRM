@@ -143,10 +143,13 @@ export function CustomFieldsManager({ onClose }: CustomFieldsManagerProps) {
         {showForm ? (
           <FieldDefinitionForm
             field={editingField}
-            onSubmit={editingField 
-              ? (input) => handleUpdate(editingField.id, input)
-              : handleCreate
-            }
+            onSubmit={(input) => {
+              if (editingField) {
+                handleUpdate(editingField.id, input as UpdateCustomFieldInput);
+              } else {
+                handleCreate(input as CreateCustomFieldInput);
+              }
+            }}
             onCancel={handleFormClose}
           />
         ) : loading ? (
