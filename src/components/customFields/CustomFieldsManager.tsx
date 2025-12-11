@@ -45,7 +45,7 @@ export function CustomFieldsManager({ onClose }: CustomFieldsManagerProps) {
     } catch (error) {
       showToast(
         error instanceof Error ? error.message : 'Ошибка загрузки полей',
-        'error'
+        { type: 'error' }
       );
     } finally {
       setLoading(false);
@@ -57,11 +57,11 @@ export function CustomFieldsManager({ onClose }: CustomFieldsManagerProps) {
       const newField = await createCustomField(input);
       setFields((prev) => [...prev, newField]);
       setShowForm(false);
-      showToast('Поле создано', 'success');
+      showToast('Поле создано', { type: 'success' });
     } catch (error) {
       showToast(
         error instanceof Error ? error.message : 'Ошибка создания поля',
-        'error'
+        { type: 'error' }
       );
     }
   };
@@ -71,11 +71,11 @@ export function CustomFieldsManager({ onClose }: CustomFieldsManagerProps) {
       const updated = await updateCustomField(id, input);
       setFields((prev) => prev.map((f) => (f.id === id ? updated : f)));
       setEditingField(null);
-      showToast('Поле обновлено', 'success');
+      showToast('Поле обновлено', { type: 'success' });
     } catch (error) {
       showToast(
         error instanceof Error ? error.message : 'Ошибка обновления поля',
-        'error'
+        { type: 'error' }
       );
     }
   };
@@ -85,11 +85,11 @@ export function CustomFieldsManager({ onClose }: CustomFieldsManagerProps) {
       setDeletingId(id);
       await deleteCustomField(id);
       setFields((prev) => prev.filter((f) => f.id !== id));
-      showToast('Поле удалено', 'success');
+      showToast('Поле удалено', { type: 'success' });
     } catch (error) {
       showToast(
         error instanceof Error ? error.message : 'Ошибка удаления поля',
-        'error'
+        { type: 'error' }
       );
     } finally {
       setDeletingId(null);

@@ -368,9 +368,9 @@ export default function OrderDetailPage() {
       const updated = await updateOrder(orderId, input);
       setOrder(updated);
       updateOrderInStore(orderId, updated);
-      showToast('Изменения сохранены', 'success');
+      showToast('Изменения сохранены', { type: 'success' });
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Ошибка сохранения', 'error');
+      showToast(err instanceof Error ? err.message : 'Ошибка сохранения', { type: 'error' });
     }
   };
 
@@ -584,8 +584,8 @@ export default function OrderDetailPage() {
             {/* Custom Fields - Requirements 9.3, 9.4 */}
             <CustomFieldInputs
               orderId={orderId}
-              onError={(msg) => showToast(msg, 'error')}
-              onSuccess={(msg) => showToast(msg, 'success')}
+              onError={(msg) => showToast(msg, { type: 'error' })}
+              onSuccess={(msg) => showToast(msg, { type: 'success' })}
             />
 
             {/* Description with Markdown support and collaborative cursors */}
@@ -612,8 +612,8 @@ export default function OrderDetailPage() {
               <FileAttachments
                 orderId={orderId}
                 currentUser={currentUser}
-                onError={(msg) => showToast(msg, 'error')}
-                onSuccess={(msg) => showToast(msg, 'success')}
+                onError={(msg) => showToast(msg, { type: 'error' })}
+                onSuccess={(msg) => showToast(msg, { type: 'success' })}
               />
             </div>
 
@@ -649,8 +649,8 @@ export default function OrderDetailPage() {
           <div className="flex-1 p-2 md:p-4 overflow-hidden min-h-[200px] md:min-h-0">
             <KanbanBoard
               orderId={orderId}
-              onError={(msg) => showToast(msg, 'error')}
-              onSuccess={(msg) => showToast(msg, 'success')}
+              onError={(msg) => showToast(msg, { type: 'error' })}
+              onSuccess={(msg) => showToast(msg, { type: 'success' })}
             />
           </div>
           
@@ -659,8 +659,8 @@ export default function OrderDetailPage() {
             <CommentList
               orderId={orderId}
               currentUser={currentUser}
-              onError={(msg) => showToast(msg, 'error')}
-              onSuccess={(msg) => showToast(msg, 'success')}
+              onError={(msg) => showToast(msg, { type: 'error' })}
+              onSuccess={(msg) => showToast(msg, { type: 'success' })}
             />
           </div>
         </div>
