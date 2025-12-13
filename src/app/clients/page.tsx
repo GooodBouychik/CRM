@@ -98,7 +98,7 @@ export default function ClientsPage() {
           <div className="text-center py-12">
             <p className="text-red-500 dark:text-red-400 mb-4">{error}</p>
             <button
-              onClick={() => loadClients()}
+              onClick={() => setSearchQuery('')}
               className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
             >
               Попробовать снова
