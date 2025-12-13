@@ -14,7 +14,6 @@ import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, format } from 'date-f
 import { AppLayout } from '@/components/layout';
 import { CalendarGrid, CalendarSubtaskCard } from '@/components/calendar';
 import { CreateSubtaskModal } from '@/components/calendar/CreateSubtaskModal';
-import { EmptyState } from '@/components/ui/EmptyState';
 import { useToast } from '@/components/ui/Toast';
 import {
   fetchCalendarSubtasks,
@@ -163,8 +162,20 @@ export default function CalendarPage() {
     <AppLayout
       title="Календарь"
       subtitle="Планирование подзадач по дням"
+      actions={
+        <button
+          onClick={() => {
+            setSelectedDate(new Date());
+            setShowCreateModal(true);
+          }}
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
+        >
+          <span>+</span>
+          <span className="hidden sm:inline">Добавить подзадачу</span>
+        </button>
+      }
     >
-      <div className="p-3 md:p-6 h-full flex flex-col">
+      <div className="p-3 md:p-6 h-full flex flex-col overflow-auto">
         {/* Error state */}
         {error && (
           <div className="text-center py-12">
@@ -210,16 +221,7 @@ export default function CalendarPage() {
           </DndContext>
         )}
 
-        {/* Empty state */}
-        {!loading && !error && subtasks.length === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none animate-fade-in">
-            <div className="text-center">
-              <span className="text-6xl mb-4 block">📅</span>
-              <h3 className="text-xl font-semibold text-gray-200 mb-2">Нет подзадач с дедлайнами</h3>
-              <p className="text-gray-500">Добавьте дедлайны к подзадачам, чтобы они появились в календаре</p>
-            </div>
-          </div>
-        )}
+
 
         {/* Create subtask modal */}
         <CreateSubtaskModal

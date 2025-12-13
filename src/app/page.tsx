@@ -138,26 +138,28 @@ export default function Home() {
         </button>
       }
     >
-      <div className="flex flex-col h-full bg-background">
+      <div className="flex flex-col h-full bg-background overflow-hidden">
         {/* Order form */}
         {showOrderForm && (
-          <div className="px-3 md:px-6 py-2 md:py-4 border-b border-border bg-card">
+          <div className="px-3 md:px-6 py-2 md:py-4 border-b border-border bg-card flex-shrink-0">
             <OrderForm onClose={() => setShowOrderForm(false)} />
           </div>
         )}
 
         {/* Filters */}
-        <OrderFilters
-          statusFilter={statusFilter}
-          priorityFilter={priorityFilter}
-          searchQuery={searchQuery}
-          onStatusChange={setStatusFilter}
-          onPriorityChange={setPriorityFilter}
-          onSearchChange={setSearchQuery}
-        />
+        <div className="flex-shrink-0">
+          <OrderFilters
+            statusFilter={statusFilter}
+            priorityFilter={priorityFilter}
+            searchQuery={searchQuery}
+            onStatusChange={setStatusFilter}
+            onPriorityChange={setPriorityFilter}
+            onSearchChange={setSearchQuery}
+          />
+        </div>
 
         {/* Order list */}
-        <div className="flex-1 p-2 md:p-4 overflow-hidden">
+        <div className="flex-1 p-2 md:p-4 overflow-auto min-h-0">
           {initialLoading ? (
             <div className="grid grid-cols-1 gap-3 md:gap-4 p-2 md:p-4">
               {[...Array(5)].map((_, i) => (
