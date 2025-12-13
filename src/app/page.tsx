@@ -152,9 +152,9 @@ export default function Home() {
         />
 
         {/* Order list */}
-        <div className="flex-1 p-2 md:p-4 overflow-hidden">
+        <div className="flex-1 p-2 md:p-4 overflow-hidden bg-background">
           {loading ? (
-            <div className="grid grid-cols-1 gap-3 md:gap-4 p-2 md:p-4">
+            <div className="grid grid-cols-1 gap-3 md:gap-4 p-2 md:p-4 bg-background">
               {[...Array(5)].map((_, i) => (
                 <SkeletonCard key={i} />
               ))}

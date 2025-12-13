@@ -2,6 +2,7 @@
 
 import { useDroppable } from '@dnd-kit/core';
 import { DraggableCalendarSubtaskCard } from './CalendarSubtaskCard';
+import { Plus } from 'lucide-react';
 import type { CalendarSubtask, DayWorkload } from '@/lib/api';
 
 interface CalendarDayProps {
@@ -10,6 +11,7 @@ interface CalendarDayProps {
   workload?: DayWorkload;
   isCurrentMonth: boolean;
   isToday: boolean;
+  isWeekend?: boolean;
   onSubtaskClick?: (subtask: CalendarSubtask) => void;
   onQuickCreate?: (date: Date) => void;
 }
@@ -20,6 +22,7 @@ export function CalendarDay({
   workload,
   isCurrentMonth,
   isToday,
+  isWeekend,
   onSubtaskClick,
   onQuickCreate,
 }: CalendarDayProps) {
@@ -40,22 +43,27 @@ export function CalendarDay({
   return (
     <div
       ref={setNodeRef}
-      className={`min-h-[120px] border border-surface-200 p-1 transition-all duration-200 ${
-        isCurrentMonth ? 'bg-surface-50' : 'bg-surface-100/50'
-      } ${isOver ? 'bg-primary-500/10 border-primary-500 scale-[1.02]' : ''} ${
-        isToday ? 'ring-2 ring-primary-500 ring-inset' : ''
-      }`}
+      className={`
+        min-h-[100px] p-2 border-b border-r border-border transition-all duration-200 group
+        ${isCurrentMonth ? 'bg-card' : 'bg-muted/30'}
+        ${isWeekend && isCurrentMonth ? 'bg-muted/20' : ''}
+        ${isOver ? 'bg-primary/10 border-primary' : ''}
+        ${isToday ? 'bg-primary/5' : ''}
+        hover:bg-accent/50
+      `}
     >
       {/* Day header */}
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between mb-2">
         <span
-          className={`text-sm font-medium ${
-            isToday
-              ? 'bg-primary-500 text-white w-6 h-6 rounded-full flex items-center justify-center'
+          className={`
+            text-sm font-medium w-7 h-7 flex items-center justify-center rounded-full
+            ${isToday
+              ? 'bg-primary text-primary-foreground'
               : isCurrentMonth
-              ? 'text-gray-100'
-              : 'text-gray-500'
-          }`}
+              ? 'text-foreground'
+              : 'text-muted-foreground/50'
+            }
+          `}
         >
           {dayNumber}
         </span>
@@ -63,11 +71,13 @@ export function CalendarDay({
         {/* Workload indicator */}
         {totalHours > 0 && (
           <span
-            className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-              isOverloaded
-                ? 'bg-red-500/20 text-red-400'
-                : 'bg-surface-200 text-gray-400'
-            }`}
+            className={`
+              text-[10px] px-1.5 py-0.5 rounded-full font-medium
+              ${isOverloaded
+                ? 'bg-destructive/20 text-destructive'
+                : 'bg-muted text-muted-foreground'
+              }
+            `}
             title={isOverloaded ? 'Перегрузка! Более 8 часов' : `${totalHours}ч запланировано`}
           >
             {totalHours}ч
@@ -75,39 +85,34 @@ export function CalendarDay({
         )}
       </div>
 
-      {/* Overload warning */}
-      {isOverloaded && (
-        <div className="text-[10px] text-red-400 flex items-center gap-1 mb-1">
-          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-          </svg>
-          Перегрузка
-        </div>
-      )}
-
       {/* Subtasks list */}
-      <div className="space-y-1 max-h-[200px] overflow-y-auto">
-        {subtasks.map((subtask) => (
+      <div className="space-y-1 max-h-[120px] overflow-y-auto">
+        {subtasks.slice(0, 3).map((subtask) => (
           <DraggableCalendarSubtaskCard
             key={subtask.id}
             subtask={subtask}
             onClick={() => onSubtaskClick?.(subtask)}
           />
         ))}
+        {subtasks.length > 3 && (
+          <div className="text-xs text-muted-foreground pl-1">
+            +{subtasks.length - 3} ещё
+          </div>
+        )}
       </div>
 
-      {/* Empty state with quick create */}
+      {/* Quick create button - visible on hover */}
       {subtasks.length === 0 && isCurrentMonth && (
         <button
           onClick={() => onQuickCreate?.(date)}
-          className="w-full h-16 flex flex-col items-center justify-center text-gray-500 hover:text-primary-400 hover:bg-surface-100 rounded transition-colors group"
+          className="
+            w-full h-12 flex items-center justify-center
+            text-muted-foreground hover:text-primary
+            opacity-0 group-hover:opacity-100 transition-all duration-200
+            rounded-lg hover:bg-accent/50
+          "
         >
-          <svg className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          <span className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">
-            Добавить
-          </span>
+          <Plus className="w-4 h-4" />
         </button>
       )}
     </div>

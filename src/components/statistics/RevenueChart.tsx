@@ -41,13 +41,13 @@ function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload || !payload.length) return null;
 
   return (
-    <div className="bg-surface-100 border border-surface-200 rounded-xl p-3 shadow-xl">
-      <p className="text-gray-400 text-sm mb-2">{label}</p>
+    <div className="bg-card border border-border rounded-xl p-3 shadow-xl">
+      <p className="text-muted-foreground text-sm mb-2">{label}</p>
       <div className="space-y-1">
         <p className="text-emerald-400 font-semibold">
           {payload[0]?.value?.toLocaleString('ru-RU')} ₽
         </p>
-        <p className="text-gray-500 text-sm">
+        <p className="text-muted-foreground text-sm">
           Заказов: {payload[0]?.payload?.orderCount}
         </p>
       </div>
@@ -114,29 +114,29 @@ export function RevenueChart({ data, loading }: RevenueChartProps) {
 
       {/* Chart */}
       {chartData.length === 0 ? (
-        <div className="h-64 flex flex-col items-center justify-center text-gray-500 animate-fade-in">
+        <div className="h-64 flex flex-col items-center justify-center text-muted-foreground animate-fade-in">
           <span className="text-4xl mb-3">📊</span>
-          <p className="text-gray-400 mb-1">Нет данных за выбранный период</p>
-          <p className="text-sm text-gray-500">Попробуйте выбрать другой период</p>
+          <p className="text-foreground mb-1">Нет данных за выбранный период</p>
+          <p className="text-sm text-muted-foreground">Попробуйте выбрать другой период</p>
         </div>
       ) : (
-        <div className="h-64">
+        <div className="h-64 bg-card rounded-lg">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
               <XAxis
                 dataKey="monthLabel"
-                tick={{ fill: '#9CA3AF', fontSize: 12 }}
-                axisLine={{ stroke: '#374151' }}
-                tickLine={{ stroke: '#374151' }}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                axisLine={{ stroke: 'hsl(var(--border))' }}
+                tickLine={{ stroke: 'hsl(var(--border))' }}
               />
               <YAxis
-                tick={{ fill: '#9CA3AF', fontSize: 12 }}
-                axisLine={{ stroke: '#374151' }}
-                tickLine={{ stroke: '#374151' }}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                axisLine={{ stroke: 'hsl(var(--border))' }}
+                tickLine={{ stroke: 'hsl(var(--border))' }}
                 tickFormatter={(value) => formatCurrency(value)}
               />
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--accent))' }} />
               <Bar
                 dataKey="totalAmount"
                 fill="#10B981"
