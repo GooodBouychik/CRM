@@ -33,7 +33,17 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     throw new Error(error.message || 'Failed to create order');
   }
 
-  return response.json();
+  const order = await response.json();
+  return parseOrderDates(order);
+}
+
+function parseOrderDates(order: any): Order {
+  return {
+    ...order,
+    dueDate: order.dueDate ? new Date(order.dueDate) : null,
+    createdAt: new Date(order.createdAt),
+    updatedAt: new Date(order.updatedAt),
+  };
 }
 
 export async function fetchOrders(): Promise<Order[]> {
@@ -43,7 +53,8 @@ export async function fetchOrders(): Promise<Order[]> {
     throw new Error('Failed to fetch orders');
   }
 
-  return response.json();
+  const orders = await response.json();
+  return orders.map(parseOrderDates);
 }
 
 export async function getUniqueClients(): Promise<string[]> {
@@ -62,7 +73,8 @@ export async function fetchOrder(id: string): Promise<Order> {
     throw new Error(error.message || 'Failed to fetch order');
   }
 
-  return response.json();
+  const order = await response.json();
+  return parseOrderDates(order);
 }
 
 export interface UpdateOrderInput {
@@ -92,7 +104,8 @@ export async function updateOrder(id: string, input: UpdateOrderInput): Promise<
     throw new Error(error.message || 'Failed to update order');
   }
 
-  return response.json();
+  const order = await response.json();
+  return parseOrderDates(order);
 }
 
 // Attachment types and API
