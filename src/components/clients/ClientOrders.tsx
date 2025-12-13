@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { OrderJourney } from './OrderJourney';
-import { fetchOrderJourney, type ClientOrder, type OrderJourney as OrderJourneyType } from '@/lib/api';
+import { fetchOrderJourney, deleteOrder, type ClientOrder, type OrderJourney as OrderJourneyType } from '@/lib/api';
+import { useToast } from '@/components/ui/Toast';
 
 export interface ClientOrdersProps {
   orders: ClientOrder[];
+  onOrderDeleted?: (orderId: string) => void;
 }
 
 const statusConfig: Record<string, { label: string; color: string; bgColor: string }> = {
@@ -17,10 +19,29 @@ const statusConfig: Record<string, { label: string; color: string; bgColor: stri
   rejected: { label: 'Отклонён', color: 'text-red-400', bgColor: 'bg-red-500/10' },
 };
 
-export function ClientOrders({ orders }: ClientOrdersProps) {
+export function ClientOrders({ orders, onOrderDeleted }: ClientOrdersProps) {
+  const { showToast } = useToast();
   const [journeys, setJourneys] = useState<Map<string, OrderJourneyType>>(new Map());
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [loadingJourneys, setLoadingJourneys] = useState<Set<string>>(new Set());
+  const [deletingOrderId, setDeletingOrderId] = useState<string | null>(null);
+
+  const handleDeleteOrder = async (e: React.MouseEvent, order: ClientOrder) => {
+    e.stopPropagation();
+    const confirmed = window.confirm(`Удалить заказ #${order.orderNumber} "${order.title}"?`);
+    if (!confirmed) return;
+
+    setDeletingOrderId(order.id);
+    try {
+      await deleteOrder(order.id);
+      showToast('Заказ удалён', { type: 'success' });
+      onOrderDeleted?.(order.id);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Ошибка удаления', { type: 'error' });
+    } finally {
+      setDeletingOrderId(null);
+    }
+  };
 
   const formatAmount = (amount: number | null) => {
     if (amount === null) return '—';
@@ -124,9 +145,25 @@ export function ClientOrders({ orders }: ClientOrdersProps) {
                         </p>
                       )}
                     </div>
-                    <div className="text-right flex-shrink-0">
-                      <p className="font-medium text-gray-200">{formatAmount(order.amount)}</p>
-                      <p className="text-sm text-gray-500">{formatDate(order.createdAt)}</p>
+                    <div className="text-right flex-shrink-0 flex items-start gap-2">
+                      <div>
+                        <p className="font-medium text-gray-200">{formatAmount(order.amount)}</p>
+                        <p className="text-sm text-gray-500">{formatDate(order.createdAt)}</p>
+                      </div>
+                      <button
+                        onClick={(e) => handleDeleteOrder(e, order)}
+                        disabled={deletingOrderId === order.id}
+                        className="p-1.5 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors disabled:opacity-50"
+                        title="Удалить заказ"
+                      >
+                        {deletingOrderId === order.id ? (
+                          <div className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        )}
+                      </button>
                     </div>
                   </div>
 
