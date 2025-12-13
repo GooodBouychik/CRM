@@ -81,7 +81,8 @@ export async function attachmentRoutes(fastify: FastifyInstance) {
       });
     }
 
-    const uploadedBy = (request.headers['x-uploaded-by'] as string) || 'Никита';
+    // Get uploadedBy from form data field (headers can't contain non-ASCII)
+    const uploadedBy = (data.fields?.uploadedBy as any)?.value || 'Никита';
     const fileId = uuid();
     const ext = path.extname(data.filename);
     const storedFilename = `${fileId}${ext}`;

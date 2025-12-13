@@ -146,12 +146,10 @@ export async function uploadAttachment(
 ): Promise<Attachment> {
   const formData = new FormData();
   formData.append('file', file);
+  formData.append('uploadedBy', uploadedBy);
 
   const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}/attachments`, {
     method: 'POST',
-    headers: {
-      'X-Uploaded-By': uploadedBy,
-    },
     body: formData,
   });
 
