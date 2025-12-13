@@ -8,18 +8,20 @@ import { fetchClients, type ClientSummary } from '@/lib/api';
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<ClientSummary[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [searching, setSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const isFirstLoad = useRef(true);
 
   // Debounced search - handles both initial load and search
   useEffect(() => {
-    const delay = isFirstLoad.current ? 0 : 300;
+    const isInitial = isFirstLoad.current;
+    const delay = isInitial ? 0 : 300;
     isFirstLoad.current = false;
     
     const timer = setTimeout(async () => {
-      setLoading(true);
+      if (!isInitial) setSearching(true);
       setError(null);
       try {
         const data = await fetchClients(searchQuery || undefined);
@@ -28,7 +30,8 @@ export default function ClientsPage() {
         setError('Не удалось загрузить список клиентов');
         console.error('Failed to fetch clients:', err);
       } finally {
-        setLoading(false);
+        setInitialLoading(false);
+        setSearching(false);
       }
     }, delay);
     
@@ -88,7 +91,7 @@ export default function ClientsPage() {
         </div>
 
         {/* Content */}
-        {loading ? (
+        {initialLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => (
               <SkeletonCard key={i} />
@@ -119,11 +122,13 @@ export default function ClientsPage() {
             </div>
           )
         ) : (
-          <ClientList clients={clients} />
+          <div className={searching ? 'opacity-50 transition-opacity' : ''}>
+            <ClientList clients={clients} />
+          </div>
         )}
 
         {/* Stats footer */}
-        {!loading && clients.length > 0 && (
+        {!initialLoading && clients.length > 0 && (
           <div className="mt-8 pt-6 border-t border-surface-200 animate-fade-in">
             <div className="flex flex-wrap gap-6 text-sm text-gray-400">
               <span>
