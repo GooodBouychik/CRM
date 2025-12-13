@@ -65,10 +65,10 @@ export function UserSelect({ onSelect, error }: UserSelectProps) {
   const selectedUserData = users.find(u => u.name === selectedUser);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center overflow-hidden relative">
+    <div className="min-h-screen bg-background flex items-center justify-center overflow-hidden relative">
       {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-3xl" />
         
@@ -100,12 +100,10 @@ export function UserSelect({ onSelect, error }: UserSelectProps) {
               transition={{ delay: 0.2 }}
               className="mb-12"
             >
-              <h1 className="text-5xl font-black tracking-tight text-white mb-3">
-                <span className="bg-gradient-to-r from-orange-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
-                  Team CRM
-                </span>
+              <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-3">
+                <span className="gradient-text">Team CRM</span>
               </h1>
-              <p className="text-gray-500 text-lg font-light tracking-wide">
+              <p className="text-muted-foreground text-base sm:text-lg font-light tracking-wide">
                 Выбери свой профиль
               </p>
             </motion.div>
@@ -130,12 +128,11 @@ export function UserSelect({ onSelect, error }: UserSelectProps) {
                   
                   {/* Card */}
                   <div className={`
-                    relative w-44 h-56 rounded-2xl overflow-hidden
-                    bg-gradient-to-b from-gray-800/80 to-gray-900/80
-                    border border-gray-700/50
+                    relative w-36 h-44 sm:w-44 sm:h-56 rounded-2xl overflow-hidden
+                    bg-card border border-border
                     backdrop-blur-xl
                     transition-all duration-300
-                    group-hover:border-gray-600/50
+                    group-hover:border-primary/30
                     group-hover:-translate-y-2
                     group-hover:shadow-2xl
                   `}>
@@ -143,9 +140,9 @@ export function UserSelect({ onSelect, error }: UserSelectProps) {
                     <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${user.gradient}`} />
                     
                     {/* Emoji */}
-                    <div className="pt-10 pb-4">
+                    <div className="pt-6 sm:pt-10 pb-3 sm:pb-4">
                       <motion.span 
-                        className="text-6xl block"
+                        className="text-5xl sm:text-6xl block"
                         animate={{ 
                           scale: hoveredUser === user.name ? 1.1 : 1,
                           rotate: hoveredUser === user.name ? [0, -5, 5, 0] : 0
@@ -158,22 +155,17 @@ export function UserSelect({ onSelect, error }: UserSelectProps) {
                     
                     {/* Name */}
                     <div className="px-4">
-                      <h3 className={`
-                        text-xl font-bold text-white
-                        transition-all duration-300
-                        group-hover:bg-gradient-to-r group-hover:${user.gradient} 
-                        group-hover:bg-clip-text group-hover:text-transparent
-                      `}>
+                      <h3 className="text-lg sm:text-xl font-bold text-foreground transition-all duration-300">
                         {user.name}
                       </h3>
                     </div>
 
                     {/* Bottom decoration */}
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                    <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2">
                       <div className={`
-                        w-12 h-1 rounded-full bg-gray-700
+                        w-10 h-0.5 rounded-full bg-muted
                         group-hover:bg-gradient-to-r group-hover:${user.gradient}
-                        transition-all duration-300
+                        group-hover:w-16 transition-all duration-300
                       `} />
                     </div>
                   </div>
@@ -204,15 +196,15 @@ export function UserSelect({ onSelect, error }: UserSelectProps) {
             {/* User info */}
             <div className="mb-8">
               <motion.span 
-                className="text-7xl block mb-4"
+                className="text-6xl sm:text-7xl block mb-4"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 15 }}
               >
                 {selectedUserData?.emoji}
               </motion.span>
-              <h2 className="text-3xl font-bold text-white mb-2">{selectedUser}</h2>
-              <p className="text-gray-500">Введите пароль для входа</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">{selectedUser}</h2>
+              <p className="text-muted-foreground">Введите пароль для входа</p>
             </div>
 
             {/* Password form */}
@@ -225,12 +217,13 @@ export function UserSelect({ onSelect, error }: UserSelectProps) {
                   placeholder="Пароль"
                   autoFocus
                   className={`
-                    w-full px-4 py-3 rounded-xl
-                    bg-gray-800/50 border 
-                    ${error ? 'border-red-500' : 'border-gray-700'}
-                    text-white text-center text-lg tracking-widest
-                    focus:outline-none focus:border-gray-500
-                    transition-colors
+                    w-full h-12 px-4 rounded-xl
+                    bg-muted border 
+                    ${error ? 'border-destructive' : 'border-border'}
+                    text-foreground text-center text-lg tracking-widest
+                    placeholder:text-muted-foreground
+                    focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary
+                    transition-all
                   `}
                 />
               </div>
@@ -239,7 +232,7 @@ export function UserSelect({ onSelect, error }: UserSelectProps) {
                 <motion.p
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-red-400 text-sm mb-4"
+                  className="text-destructive text-sm mb-4"
                 >
                   {error}
                 </motion.p>

@@ -4,6 +4,7 @@ import { useState, ReactNode, useEffect } from 'react';
 import { Sidebar } from './Sidebar';
 import { Breadcrumb, BreadcrumbItem } from './Breadcrumb';
 import { AuthGuard } from '@/components/auth';
+import { Menu } from 'lucide-react';
 
 export interface AppLayoutProps {
   children: ReactNode;
@@ -26,7 +27,7 @@ export function AppLayout({
   // Close mobile menu on route change or resize
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) {
+      if (window.innerWidth >= 1024) {
         setMobileMenuOpen(false);
       }
     };
@@ -46,27 +47,35 @@ export function AppLayout({
 
   return (
     <AuthGuard>
-      <div className="flex h-screen bg-[#0a0a0f]">
+      <div className="flex h-screen bg-background">
+        {/* Mobile toggle button */}
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-card border border-border hover:bg-accent transition-colors"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+
+        {/* Overlay for mobile */}
+        {mobileMenuOpen && (
+          <div
+            className="lg:hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-30"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+
         {/* Desktop Sidebar */}
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <Sidebar 
             collapsed={sidebarCollapsed} 
             onToggle={() => setSidebarCollapsed(prev => !prev)} 
           />
         </div>
 
-        {/* Mobile Sidebar Overlay */}
-        {mobileMenuOpen && (
-          <div 
-            className="fixed inset-0 z-40 bg-black/60 md:hidden"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-        )}
-
         {/* Mobile Sidebar */}
         <div className={`
-          fixed inset-y-0 left-0 z-50 md:hidden
-          transform transition-transform duration-300 ease-out
+          fixed inset-y-0 left-0 z-40 lg:hidden
+          transform transition-transform duration-300 ease-in-out
           ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
         `}>
           <Sidebar 
@@ -79,18 +88,10 @@ export function AppLayout({
         {/* Main content area */}
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Header with breadcrumbs */}
-          <header className="flex-shrink-0 bg-surface-50 border-b border-surface-200">
-            <div className="px-3 md:px-6 py-2 md:py-3 flex items-center gap-3">
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setMobileMenuOpen(true)}
-                className="md:hidden p-2 -ml-1 rounded-lg hover:bg-surface-100 text-gray-400 touch-manipulation"
-                aria-label="Открыть меню"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
+          <header className="flex-shrink-0 bg-card border-b border-border">
+            <div className="px-4 lg:px-6 py-3 flex items-center gap-3">
+              {/* Spacer for mobile menu button */}
+              <div className="lg:hidden w-10" />
               <div className="flex-1">
                 <Breadcrumb items={breadcrumbs} />
               </div>
@@ -98,15 +99,15 @@ export function AppLayout({
             
             {/* Title section if provided */}
             {(title || actions) && (
-              <div className="px-3 md:px-6 pb-3 md:pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="px-4 lg:px-6 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="min-w-0">
                   {title && (
-                    <h1 className="text-lg md:text-2xl font-bold text-gray-100 truncate">
+                    <h1 className="text-xl lg:text-2xl font-bold text-foreground truncate">
                       {title}
                     </h1>
                   )}
                   {subtitle && (
-                    <p className="text-xs md:text-sm text-gray-500 mt-0.5 truncate">
+                    <p className="text-sm text-muted-foreground mt-0.5 truncate">
                       {subtitle}
                     </p>
                   )}

@@ -6,11 +6,27 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useUser } from '@/providers/UserProvider';
 import type { ParticipantName } from '@/types';
+import {
+  LayoutDashboard,
+  ShoppingCart,
+  Users,
+  Calendar,
+  History,
+  BarChart3,
+  Zap,
+  Archive,
+  UserCircle,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+  ChevronLeft,
+} from 'lucide-react';
 
 export interface NavItem {
   id: string;
   label: string;
-  icon: string;
+  icon: React.ElementType;
   path: string;
   badge?: number;
   description?: string;
@@ -23,16 +39,16 @@ export interface SidebarProps {
 }
 
 const navItems: NavItem[] = [
-  { id: 'dashboard', label: 'Дашборд', icon: '📊', path: '/dashboard', description: 'Персональный обзор' },
-  { id: 'orders', label: 'Заказы', icon: '📋', path: '/', description: 'Список всех заказов' },
-  { id: 'clients', label: 'Клиенты', icon: '👥', path: '/clients', description: 'Карточки клиентов' },
-  { id: 'calendar', label: 'Календарь', icon: '📅', path: '/calendar', description: 'Календарь подзадач' },
-  { id: 'history', label: 'История', icon: '📜', path: '/history', description: 'История заказов' },
-  { id: 'statistics', label: 'Статистика', icon: '📈', path: '/statistics', description: 'Аналитика и отчёты' },
-  { id: 'activity', label: 'Активность', icon: '⚡', path: '/activity', description: 'Лента действий' },
-  { id: 'archive', label: 'Архив', icon: '📁', path: '/archive', description: 'Завершённые заказы' },
-  { id: 'accounts', label: 'Аккаунты', icon: '🔐', path: '/accounts', description: 'Хранилище паролей' },
-  { id: 'settings', label: 'Настройки', icon: '⚙️', path: '/settings', description: 'Кастомные поля' },
+  { id: 'dashboard', label: 'Дашборд', icon: LayoutDashboard, path: '/dashboard', description: 'Персональный обзор' },
+  { id: 'orders', label: 'Заказы', icon: ShoppingCart, path: '/', description: 'Список всех заказов' },
+  { id: 'clients', label: 'Клиенты', icon: Users, path: '/clients', description: 'Карточки клиентов' },
+  { id: 'calendar', label: 'Календарь', icon: Calendar, path: '/calendar', description: 'Календарь подзадач' },
+  { id: 'history', label: 'История', icon: History, path: '/history', description: 'История заказов' },
+  { id: 'statistics', label: 'Статистика', icon: BarChart3, path: '/statistics', description: 'Аналитика и отчёты' },
+  { id: 'activity', label: 'Активность', icon: Zap, path: '/activity', description: 'Лента действий' },
+  { id: 'archive', label: 'Архив', icon: Archive, path: '/archive', description: 'Завершённые заказы' },
+  { id: 'accounts', label: 'Аккаунты', icon: UserCircle, path: '/accounts', description: 'Хранилище паролей' },
+  { id: 'settings', label: 'Настройки', icon: Settings, path: '/settings', description: 'Кастомные поля' },
 ];
 
 const userStyles: Record<ParticipantName, { gradient: string; emoji: string }> = {
@@ -67,127 +83,104 @@ export function Sidebar({ collapsed: controlledCollapsed, onToggle, isMobile }: 
   return (
     <aside
       className={`
-        flex flex-col h-full bg-surface-50 border-r border-surface-200
+        flex flex-col h-full bg-sidebar border-r border-sidebar-border
         transition-all duration-300 ease-out
-        ${collapsed ? 'w-20' : 'w-72'}
-        ${isMobile ? 'w-72 max-w-[85vw]' : ''}
+        ${collapsed ? 'w-20' : 'w-64'}
+        ${isMobile ? 'w-64 max-w-[85vw]' : ''}
       `}
     >
-      {/* Header with logo */}
-      <div className="flex items-center justify-between p-4 md:p-5 border-b border-surface-200">
-        {!collapsed && (
-          <Link href="/dashboard" onClick={isMobile ? onToggle : undefined} className="flex items-center gap-2">
-            <span className="text-xl md:text-2xl font-black tracking-tight">
-              <span className="bg-gradient-to-r from-orange-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
-                Team
-              </span>
-              <span className="text-gray-300">CRM</span>
-            </span>
-          </Link>
-        )}
-        <button
-          onClick={handleToggle}
-          className={`
-            p-2.5 rounded-xl text-gray-500 hover:text-gray-300
-            hover:bg-surface-100 transition-all duration-200 touch-manipulation
-            ${collapsed ? 'mx-auto' : ''}
-          `}
-          title={isMobile ? 'Закрыть' : collapsed ? 'Развернуть' : 'Свернуть'}
-        >
-          {isMobile ? (
-            <span className="block text-xl">✕</span>
-          ) : (
-            <motion.span
-              animate={{ rotate: collapsed ? 180 : 0 }}
-              transition={{ duration: 0.2 }}
-              className="block"
-            >
-              ←
-            </motion.span>
+      {/* Logo */}
+      <div className="p-4 pt-5">
+        <div className="flex items-center justify-between">
+          {!collapsed && (
+            <h1 className="text-xl font-bold gradient-text">TeamCRM</h1>
           )}
-        </button>
+          <button
+            onClick={handleToggle}
+            className={`
+              p-2 rounded-lg text-muted-foreground hover:text-foreground
+              hover:bg-sidebar-accent transition-all duration-200
+              ${collapsed ? 'mx-auto' : ''}
+            `}
+            title={isMobile ? 'Закрыть' : collapsed ? 'Развернуть' : 'Свернуть'}
+          >
+            {isMobile ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <motion.div
+                animate={{ rotate: collapsed ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </motion.div>
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* User card */}
+      {/* User Profile Card */}
       {currentUser && userStyle && (
-        <div className={`p-4 ${collapsed ? 'px-3' : ''}`}>
+        <div className={`mx-3 mb-4 ${collapsed ? 'mx-2' : ''}`}>
           <div className={`
-            relative overflow-hidden rounded-2xl p-4
-            bg-gradient-to-br ${userStyle.gradient} bg-opacity-10
-            border border-white/10
-            ${collapsed ? 'p-3' : ''}
+            p-3 rounded-xl bg-gradient-to-r flex items-center gap-3
+            ${userStyle.gradient}
+            ${collapsed ? 'justify-center p-2' : ''}
           `}>
-            <div className="absolute inset-0 bg-black/40" />
-            <div className="relative flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-                <span className="text-xl">{userStyle.emoji}</span>
+            <span className="text-2xl">{userStyle.emoji}</span>
+            {!collapsed && (
+              <div>
+                <p className="font-medium text-white">{currentUser}</p>
+                <p className="text-xs text-white/70">Онлайн</p>
               </div>
-              {!collapsed && (
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-white truncate">{currentUser}</p>
-                  <p className="text-xs text-white/60">Онлайн</p>
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
       )}
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
+          const Icon = item.icon;
           const active = isActive(item.path);
+          
           return (
             <Link
               key={item.id}
               href={item.path}
               onClick={isMobile ? onToggle : undefined}
               className={`
-                group relative flex items-center gap-3 px-4 py-3 rounded-xl
-                transition-all duration-200 ease-out touch-manipulation
+                group relative w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm
+                transition-all duration-200
                 ${active
-                  ? 'bg-accent-500/10 text-accent-400'
-                  : 'text-gray-400 hover:bg-surface-100 hover:text-gray-200'
+                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25'
+                  : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
                 }
-                ${collapsed ? 'justify-center px-3' : ''}
+                ${collapsed ? 'justify-center px-2' : ''}
               `}
               title={collapsed ? item.label : undefined}
             >
-              {/* Active indicator */}
-              {active && (
-                <motion.div
-                  layoutId="activeNav"
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-accent-500 rounded-r-full"
-                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                />
-              )}
+              <Icon className="w-5 h-5 flex-shrink-0" />
+              {!collapsed && <span>{item.label}</span>}
               
-              <span className="text-xl flex-shrink-0">{item.icon}</span>
-              
-              {!collapsed && (
-                <>
-                  <span className="font-medium">{item.label}</span>
-                  {item.badge !== undefined && item.badge > 0 && (
-                    <span className="ml-auto px-2 py-0.5 text-xs font-bold bg-red-500 text-white rounded-full">
-                      {item.badge}
-                    </span>
-                  )}
-                </>
+              {/* Badge */}
+              {!collapsed && item.badge !== undefined && item.badge > 0 && (
+                <span className="ml-auto px-2 py-0.5 text-xs font-bold bg-destructive text-white rounded-full">
+                  {item.badge}
+                </span>
               )}
               
               {/* Tooltip for collapsed */}
               {collapsed && (
                 <div className="
-                  absolute left-full ml-3 px-3 py-2 bg-surface-100 text-gray-200 text-sm rounded-xl
+                  absolute left-full ml-3 px-3 py-2 bg-card text-foreground text-sm rounded-xl
                   opacity-0 invisible group-hover:opacity-100 group-hover:visible
                   transition-all duration-200 whitespace-nowrap z-50
-                  shadow-xl border border-surface-200
+                  shadow-xl border border-border
                 ">
                   <div className="font-medium">{item.label}</div>
                   {item.description && (
-                    <div className="text-xs text-gray-500 mt-0.5">{item.description}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{item.description}</div>
                   )}
-                  <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-surface-100" />
                 </div>
               )}
             </Link>
@@ -195,25 +188,23 @@ export function Sidebar({ collapsed: controlledCollapsed, onToggle, isMobile }: 
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="p-4 border-t border-surface-200">
-        {currentUser && (
-          <button
-            onClick={logout}
-            className={`
-              w-full flex items-center gap-3 px-4 py-3 rounded-xl
-              text-gray-500 hover:text-gray-300 hover:bg-surface-100
-              transition-all duration-200
-              ${collapsed ? 'justify-center px-3' : ''}
-            `}
-            title={collapsed ? 'Выйти' : undefined}
-          >
-            <span className="text-lg">🚪</span>
-            {!collapsed && <span className="text-sm">Сменить пользователя</span>}
-          </button>
-        )}
+      {/* Bottom section */}
+      <div className="p-3 space-y-2 border-t border-sidebar-border">
+        <button
+          onClick={logout}
+          className={`
+            w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm
+            text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground
+            transition-colors
+            ${collapsed ? 'justify-center px-2' : ''}
+          `}
+          title={collapsed ? 'Сменить пользователя' : undefined}
+        >
+          <LogOut className="w-5 h-5" />
+          {!collapsed && <span>Сменить пользователя</span>}
+        </button>
         {!collapsed && (
-          <p className="text-xs text-gray-600 text-center mt-3">
+          <p className="text-xs text-center text-muted-foreground">
             © 2024 Team CRM
           </p>
         )}
