@@ -39,6 +39,11 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
   const maxNum = queryOne<{ max: number | null }>('SELECT MAX(order_number) as max FROM orders');
   const orderNumber = (maxNum?.max ?? 0) + 1;
 
+  // Convert Date to ISO string for SQLite
+  const dueDate = input.dueDate instanceof Date 
+    ? input.dueDate.toISOString() 
+    : (input.dueDate ?? null);
+
   run(
     `INSERT INTO orders (id, order_number, title, description, client_name, amount, status, priority, due_date, tags, assigned_to, updated_by)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -51,7 +56,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       input.amount ?? null,
       input.status ?? 'new',
       input.priority ?? 'medium',
-      input.dueDate ?? null,
+      dueDate,
       JSON.stringify(input.tags ?? []),
       JSON.stringify(input.assignedTo ?? []),
       input.updatedBy,
@@ -155,7 +160,11 @@ export async function updateOrder(id: string, input: UpdateOrderInput): Promise<
     const newDueDate = input.dueDate ? new Date(input.dueDate).toISOString().split('T')[0] : null;
     if (currentDueDate !== newDueDate) {
       updates.push(`due_date = ?`);
-      params.push(input.dueDate);
+      // Convert Date to ISO string for SQLite
+      const dueDateValue = input.dueDate instanceof Date 
+        ? input.dueDate.toISOString() 
+        : (input.dueDate ?? null);
+      params.push(dueDateValue);
       fieldChanges.push({ fieldName: 'dueDate', oldValue: currentOrder.dueDate, newValue: input.dueDate });
     }
   }
