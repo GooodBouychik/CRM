@@ -136,7 +136,7 @@ export function RevenueChart({ data, loading }: RevenueChartProps) {
                 tickLine={{ stroke: 'hsl(var(--border))' }}
                 tickFormatter={(value) => formatCurrency(value)}
               />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--accent))' }} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(156, 163, 175, 0.2)' }} />
               <Bar
                 dataKey="totalAmount"
                 fill="#10B981"
