@@ -51,7 +51,7 @@ export function AppLayout({
         {/* Mobile toggle button */}
         <button
           onClick={() => setMobileMenuOpen(true)}
-          className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-card border border-border hover:bg-accent transition-colors"
+          className="lg:hidden fixed top-4 right-4 z-50 p-2 rounded-lg bg-card border border-border hover:bg-accent transition-colors"
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -90,11 +90,11 @@ export function AppLayout({
           {/* Header with breadcrumbs */}
           <header className="flex-shrink-0 bg-card border-b border-border">
             <div className="px-4 lg:px-6 py-3 flex items-center gap-3">
-              {/* Spacer for mobile menu button */}
-              <div className="lg:hidden w-10" />
               <div className="flex-1">
                 <Breadcrumb items={breadcrumbs} />
               </div>
+              {/* Spacer for mobile menu button */}
+              <div className="lg:hidden w-10" />
             </div>
             
             {/* Title section if provided */}

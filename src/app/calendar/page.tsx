@@ -13,6 +13,7 @@ import {
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, format } from 'date-fns';
 import { AppLayout } from '@/components/layout';
 import { CalendarGrid, CalendarSubtaskCard } from '@/components/calendar';
+import { CreateSubtaskModal } from '@/components/calendar/CreateSubtaskModal';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useToast } from '@/components/ui/Toast';
 import {
@@ -30,6 +31,8 @@ export default function CalendarPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeSubtask, setActiveSubtask] = useState<CalendarSubtask | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const toast = useToast();
 
   // Calculate date range for the current month view
@@ -144,10 +147,16 @@ export default function CalendarPage() {
     window.location.href = `/orders/${subtask.orderId}`;
   };
 
-  // Handle quick create - navigate to order creation
+  // Handle quick create - open modal
   const handleQuickCreate = (date: Date) => {
-    // For now, just show a toast. In a full implementation, this would open a modal
-    toast.info(`Создание подзадачи на ${format(date, 'dd.MM.yyyy')} пока не реализовано`);
+    setSelectedDate(date);
+    setShowCreateModal(true);
+  };
+
+  // Handle subtask creation success
+  const handleCreateSuccess = () => {
+    toast.success('Подзадача создана');
+    loadData(); // Reload calendar data
   };
 
   return (
@@ -211,6 +220,15 @@ export default function CalendarPage() {
             </div>
           </div>
         )}
+
+        {/* Create subtask modal */}
+        <CreateSubtaskModal
+          isOpen={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          selectedDate={selectedDate}
+          onSuccess={handleCreateSuccess}
+          onError={(msg) => toast.error(msg)}
+        />
       </div>
     </AppLayout>
   );

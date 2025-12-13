@@ -89,7 +89,7 @@ function EditableField({
           onChange={(e) => setEditValue(e.target.value)}
           onBlur={handleSave}
           onKeyDown={handleKeyDown}
-          className={`w-full px-2 py-1 border border-primary-500 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 ${className}`}
+          className={`w-full px-3 py-2 bg-secondary border-0 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary text-foreground ${className}`}
           autoFocus
           rows={4}
         />
@@ -102,7 +102,7 @@ function EditableField({
         onChange={(e) => setEditValue(e.target.value)}
         onBlur={handleSave}
         onKeyDown={handleKeyDown}
-        className={`w-full px-2 py-1 border border-primary-500 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 ${className}`}
+        className={`w-full px-3 py-2 bg-secondary border-0 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary text-foreground ${className}`}
         autoFocus
         placeholder={placeholder}
       />
@@ -113,12 +113,12 @@ function EditableField({
     <div className="relative">
       <span
         onClick={handleStartEdit}
-        className={`cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded ${className} ${
+        className={`cursor-pointer hover:bg-accent px-3 py-2 rounded-lg block ${className} ${
           otherEditor ? 'ring-2 ring-amber-400 ring-opacity-50' : ''
         }`}
-        title={otherEditor ? `${otherEditor} редактирует это поле` : 'Click to edit'}
+        title={otherEditor ? `${otherEditor} редактирует это поле` : 'Нажмите для редактирования'}
       >
-        {value || <span className="text-gray-400">{placeholder || 'Click to edit'}</span>}
+        {value || <span className="text-muted-foreground">{placeholder || 'Нажмите для редактирования'}</span>}
       </span>
       {otherEditor && (
         <div className="absolute -bottom-5 left-0">
@@ -140,11 +140,11 @@ const statusLabels: Record<OrderStatus, string> = {
 };
 
 const statusColors: Record<OrderStatus, string> = {
-  new: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-  in_progress: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-  review: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-  completed: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  rejected: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+  new: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
+  in_progress: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
+  review: 'bg-purple-500/20 text-purple-400 border border-purple-500/30',
+  completed: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
+  rejected: 'bg-red-500/20 text-red-400 border border-red-500/30',
 };
 
 // Priority badge component
@@ -155,9 +155,9 @@ const priorityLabels: Record<Priority, string> = {
 };
 
 const priorityColors: Record<Priority, string> = {
-  high: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-  medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-  low: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
+  high: 'bg-red-500/20 text-red-400 border border-red-500/30',
+  medium: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
+  low: 'bg-gray-500/20 text-gray-400 border border-gray-500/30',
 };
 
 // Assignment toggle component
@@ -172,14 +172,14 @@ function AssignmentToggles({ assignedTo, onToggle }: AssignmentTogglesProps) {
   return (
     <div className="flex flex-col gap-2">
       {participants.map((name) => (
-        <label key={name} className="flex items-center gap-2 cursor-pointer">
+        <label key={name} className="flex items-center gap-3 cursor-pointer group">
           <input
             type="checkbox"
             checked={assignedTo.includes(name)}
             onChange={() => onToggle(name)}
-            className="w-4 h-4 text-primary-500 rounded border-gray-300 focus:ring-primary-500"
+            className="w-4 h-4 rounded border-muted-foreground bg-secondary text-primary focus:ring-primary focus:ring-offset-0"
           />
-          <span className="text-sm text-gray-700 dark:text-gray-300">{name}</span>
+          <span className="text-sm text-foreground group-hover:text-primary transition-colors">{name}</span>
         </label>
       ))}
     </div>
@@ -405,19 +405,19 @@ export default function OrderDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+      <div className="flex items-center justify-center h-screen bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   if (error || !order) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen gap-4">
-        <p className="text-red-500">{error || 'Order not found'}</p>
+      <div className="flex flex-col items-center justify-center h-screen gap-4 bg-background">
+        <p className="text-destructive">{error || 'Order not found'}</p>
         <button
           onClick={() => router.push('/')}
-          className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600"
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
         >
           Вернуться к списку
         </button>
@@ -429,7 +429,7 @@ export default function OrderDetailPage() {
 
   return (
     <div 
-      className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900 transition-transform duration-200"
+      className="flex flex-col h-screen bg-background transition-transform duration-200"
       style={{ 
         transform: isSwipingToClose ? `translateX(${swipeOffset}px)` : 'translateX(0)',
         opacity: isSwipingToClose ? 1 - (swipeOffset / window.innerWidth) * 0.5 : 1,
@@ -440,7 +440,7 @@ export default function OrderDetailPage() {
     >
       {/* Swipe indicator for mobile */}
       {isMobile && (
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-20 bg-gray-300 dark:bg-gray-600 rounded-r-full opacity-50" />
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-20 bg-muted rounded-r-full opacity-50" />
       )}
 
       {/* Conflict Warning Toast */}
@@ -453,11 +453,11 @@ export default function OrderDetailPage() {
       )}
 
       {/* Header - responsive */}
-      <header className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+      <header className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-border bg-card">
         <div className="flex items-center gap-2 md:gap-4">
           <button
             onClick={() => router.push('/')}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg touch-manipulation"
+            className="p-2 hover:bg-accent rounded-lg touch-manipulation text-muted-foreground hover:text-foreground transition-colors"
             title="Назад к списку"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -465,10 +465,10 @@ export default function OrderDetailPage() {
             </svg>
           </button>
           <div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-sm text-muted-foreground font-mono">
               #{String(order.orderNumber).padStart(3, '0')}
             </span>
-            <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+            <h1 className="text-xl font-bold font-mono text-foreground">
               <EditableField
                 value={order.title}
                 onSave={(value) => handleFieldUpdate('title', value)}
@@ -488,7 +488,7 @@ export default function OrderDetailPage() {
           <select
             value={order.status}
             onChange={(e) => handleFieldUpdate('status', e.target.value)}
-            className={`px-3 py-1 rounded-full text-sm font-medium ${statusColors[order.status]} border-0 cursor-pointer`}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium ${statusColors[order.status]} cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary`}
           >
             {Object.entries(statusLabels).map(([value, label]) => (
               <option key={value} value={value}>{label}</option>
@@ -498,7 +498,7 @@ export default function OrderDetailPage() {
           <select
             value={order.priority}
             onChange={(e) => handleFieldUpdate('priority', e.target.value)}
-            className={`px-3 py-1 rounded-full text-sm font-medium ${priorityColors[order.priority]} border-0 cursor-pointer`}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium ${priorityColors[order.priority]} cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary`}
           >
             {Object.entries(priorityLabels).map(([value, label]) => (
               <option key={value} value={value}>{label}</option>
@@ -507,7 +507,7 @@ export default function OrderDetailPage() {
           {/* Delete button */}
           <button
             onClick={handleDeleteOrder}
-            className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+            className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
             title="Удалить заказ"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -521,18 +521,18 @@ export default function OrderDetailPage() {
       {/* Main content - Split screen layout (stacked on mobile) */}
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         {/* Left panel - Order information */}
-        <div className="w-full md:w-1/3 md:min-w-[320px] border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto max-h-[40vh] md:max-h-none">
-          <div className="p-4 md:p-6 space-y-4 md:space-y-6">
+        <div className="w-full md:w-[380px] md:min-w-[380px] border-b md:border-b-0 md:border-r border-border bg-sidebar overflow-y-auto max-h-[40vh] md:max-h-none scrollbar-thin">
+          <div className="p-4 md:p-6 space-y-5 md:space-y-6">
             {/* Client */}
-            <div>
-              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+            <div className="space-y-2">
+              <label className="text-muted-foreground text-xs uppercase tracking-wider">
                 Клиент
               </label>
               <EditableField
                 value={order.clientName || ''}
                 onSave={(value) => handleFieldUpdate('clientName', value || null)}
                 placeholder="Имя клиента"
-                className="text-gray-900 dark:text-gray-100"
+                className="text-foreground"
                 fieldName="clientName"
                 orderId={orderId}
                 currentUser={currentUser}
@@ -543,42 +543,44 @@ export default function OrderDetailPage() {
             </div>
 
             {/* Amount */}
-            <div>
-              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+            <div className="space-y-2">
+              <label className="text-muted-foreground text-xs uppercase tracking-wider">
                 Сумма
               </label>
-              <EditableField
-                value={order.amount?.toString() || ''}
-                onSave={(value) => handleFieldUpdate('amount', value ? parseFloat(value) : null)}
-                type="number"
-                placeholder="0"
-                className="text-gray-900 dark:text-gray-100"
-                fieldName="amount"
-                orderId={orderId}
-                currentUser={currentUser}
-                onStartEdit={handleStartEdit}
-                onStopEdit={handleStopEdit}
-                otherEditor={getOtherEditor('amount')}
-              />
-              {order.amount && <span className="text-gray-500 ml-1">₽</span>}
+              <div className="relative">
+                <EditableField
+                  value={order.amount?.toString() || ''}
+                  onSave={(value) => handleFieldUpdate('amount', value ? parseFloat(value) : null)}
+                  type="number"
+                  placeholder="0"
+                  className="text-foreground"
+                  fieldName="amount"
+                  orderId={orderId}
+                  currentUser={currentUser}
+                  onStartEdit={handleStartEdit}
+                  onStopEdit={handleStopEdit}
+                  otherEditor={getOtherEditor('amount')}
+                />
+                {order.amount && <span className="text-muted-foreground ml-1">₽</span>}
+              </div>
             </div>
 
             {/* Deadline */}
-            <div>
-              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+            <div className="space-y-2">
+              <label className="text-muted-foreground text-xs uppercase tracking-wider">
                 Дедлайн
               </label>
               <input
                 type="date"
                 value={order.dueDate ? new Date(order.dueDate).toISOString().split('T')[0] : ''}
                 onChange={(e) => handleFieldUpdate('dueDate', e.target.value || null)}
-                className={`px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 ${deadlineClass}`}
+                className={`w-full px-3 py-2 bg-secondary border-0 rounded-lg text-foreground focus:ring-1 focus:ring-primary ${deadlineClass}`}
               />
             </div>
 
             {/* Assignment toggles */}
-            <div>
-              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+            <div className="space-y-3">
+              <label className="text-muted-foreground text-xs uppercase tracking-wider">
                 Кто работает
               </label>
               <AssignmentToggles
@@ -588,21 +590,20 @@ export default function OrderDetailPage() {
             </div>
 
             {/* Tags */}
-            <div>
-              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+            <div className="space-y-2">
+              <label className="text-muted-foreground text-xs uppercase tracking-wider">
                 Теги
               </label>
               <div className="flex flex-wrap gap-1">
-                {order.tags.map((tag, index) => (
+                {order.tags.length > 0 ? order.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-sm"
+                    className="px-2 py-0.5 bg-secondary text-foreground rounded text-sm"
                   >
                     {tag}
                   </span>
-                ))}
-                {order.tags.length === 0 && (
-                  <span className="text-gray-400 text-sm">Нет тегов</span>
+                )) : (
+                  <span className="text-muted-foreground text-sm">Нет тегов</span>
                 )}
               </div>
             </div>
@@ -615,8 +616,8 @@ export default function OrderDetailPage() {
             />
 
             {/* Description with Markdown support and collaborative cursors */}
-            <div>
-              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+            <div className="space-y-2">
+              <label className="text-muted-foreground text-xs uppercase tracking-wider">
                 Описание (Markdown)
               </label>
               <MarkdownEditor
@@ -631,8 +632,8 @@ export default function OrderDetailPage() {
             </div>
 
             {/* File Attachments */}
-            <div>
-              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+            <div className="space-y-2">
+              <label className="text-muted-foreground text-xs uppercase tracking-wider">
                 Файлы
               </label>
               <FileAttachments
@@ -644,7 +645,7 @@ export default function OrderDetailPage() {
             </div>
 
             {/* Metadata */}
-            <div className="pt-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+            <div className="pt-4 border-t border-border text-sm text-muted-foreground space-y-1">
               <p>Создан: {new Date(order.createdAt).toLocaleString('ru-RU')}</p>
               <p>Обновлён: {new Date(order.updatedAt).toLocaleString('ru-RU')}</p>
               <p>Последнее изменение: {order.updatedBy}</p>
@@ -652,7 +653,7 @@ export default function OrderDetailPage() {
               {/* Show history button (Requirements 10.2, 10.3) */}
               <button
                 onClick={() => setShowHistory(true)}
-                className="mt-3 flex items-center gap-2 text-primary-500 hover:text-primary-600 transition-colors"
+                className="mt-3 flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -672,7 +673,7 @@ export default function OrderDetailPage() {
 
         {/* Right panel - Kanban board */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex-1 p-2 md:p-4 overflow-hidden min-h-[200px] md:min-h-0">
+          <div className="flex-1 p-2 md:p-6 overflow-hidden min-h-[200px] md:min-h-0">
             <KanbanBoard
               orderId={orderId}
               onError={(msg) => showToast(msg, { type: 'error' })}
@@ -681,7 +682,7 @@ export default function OrderDetailPage() {
           </div>
           
           {/* Bottom - Comments section */}
-          <div className="h-auto md:h-1/3 min-h-[150px] md:min-h-[200px] border-t border-gray-200 dark:border-gray-700">
+          <div className="h-auto md:h-1/3 min-h-[150px] md:min-h-[200px] border-t border-border">
             <CommentList
               orderId={orderId}
               currentUser={currentUser}

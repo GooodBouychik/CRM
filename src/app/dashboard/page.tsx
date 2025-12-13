@@ -13,6 +13,7 @@ import { SkeletonKanbanColumn } from '@/components/ui/Skeleton';
 import { DeadlinesWidget } from '@/components/dashboard/DeadlinesWidget';
 import { StatsWidget } from '@/components/dashboard/StatsWidget';
 import { categorizeOrders, type UnreadInfo } from '@/lib/dashboardUtils';
+import { fetchOrders } from '@/lib/api';
 import type { Order, DashboardTask, TaskStatus } from '@/types';
 
 // Dashboard section component for orders
@@ -184,7 +185,7 @@ function QuickStats({
 export default function Dashboard() {
   const router = useRouter();
   const { currentUser } = useUser();
-  const { orders: ordersMap, selectOrder } = useOrderStore();
+  const { orders: ordersMap, selectOrder, setOrders } = useOrderStore();
   const orders = useMemo(() => Object.values(ordersMap), [ordersMap]);
   
   // Task store
@@ -207,6 +208,23 @@ export default function Dashboard() {
     mentions: [],
     replies: [],
   });
+
+  // Fetch orders on mount to ensure stats are loaded immediately
+  useEffect(() => {
+    const loadOrders = async () => {
+      try {
+        const ordersData = await fetchOrders();
+        setOrders(ordersData);
+      } catch (err) {
+        console.error('Failed to fetch orders:', err);
+      }
+    };
+    
+    // Only fetch if orders are empty
+    if (Object.keys(ordersMap).length === 0) {
+      loadOrders();
+    }
+  }, [ordersMap, setOrders]);
 
   // Fetch tasks when user changes or showAllTasks changes
   useEffect(() => {
