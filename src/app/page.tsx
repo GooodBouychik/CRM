@@ -8,13 +8,16 @@ import { OrderTable, OrderFilters, OrderForm, MobileOrderList, type SortColumn, 
 import { AppLayout } from '@/components/layout';
 import { sortOrders, filterOrders } from '@/lib/orderUtils';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { useToast } from '@/components/ui/Toast';
+import { deleteOrder } from '@/lib/api';
 import type { Order, OrderStatus, Priority } from '@/types';
 
 export default function Home() {
   const router = useRouter();
   const isMobile = useIsMobile();
+  const { showToast } = useToast();
   const { currentUser } = useUser();
-  const { orders: ordersMap, selectOrder } = useOrderStore();
+  const { orders: ordersMap, selectOrder, deleteOrder: deleteOrderFromStore } = useOrderStore();
   const orders = useMemo(() => Object.values(ordersMap), [ordersMap]);
 
   // Selection state
@@ -68,6 +71,20 @@ export default function Home() {
     selectOrder(order.id);
     router.push(`/orders/${order.id}`);
   }, [selectOrder, router]);
+
+  // Handle order delete
+  const handleDeleteOrder = useCallback(async (order: Order) => {
+    const confirmed = window.confirm(`Удалить заказ #${String(order.orderNumber).padStart(3, '0')} "${order.title}"?`);
+    if (!confirmed) return;
+
+    try {
+      await deleteOrder(order.id);
+      deleteOrderFromStore(order.id);
+      showToast('Заказ удалён', { type: 'success' });
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Ошибка удаления', { type: 'error' });
+    }
+  }, [deleteOrderFromStore, showToast]);
 
   // Process orders: filter then sort
   const processedOrders = useMemo(() => {
@@ -146,6 +163,7 @@ export default function Home() {
               onSelectOrder={handleSelectOrder}
               onSelectAll={handleSelectAll}
               onOrderClick={handleOrderClick}
+              onDeleteOrder={handleDeleteOrder}
               sortColumn={sortColumn}
               sortDirection={sortDirection}
               onSort={handleSort}
