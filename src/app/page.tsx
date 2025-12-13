@@ -197,7 +197,7 @@ export default function Home() {
               sortDirection={sortDirection}
               onSort={handleSort}
             />
-          ))}
+          )}
         </div>
       </div>
     </AppLayout>
