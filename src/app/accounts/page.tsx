@@ -180,9 +180,9 @@ export default function AccountsPage() {
       title="Аккаунты"
       subtitle="Учётные данные сервисов"
     >
-      <div className="p-6">
+      <div className="p-3 md:p-6">
         {/* Header with search and add button */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-4 md:mb-6">
           {/* Search */}
           <div className="relative flex-1">
             <svg
@@ -220,18 +220,19 @@ export default function AccountsPage() {
           {/* Add button */}
           <button
             onClick={handleAddAccount}
-            className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors flex items-center gap-2 whitespace-nowrap"
+            className="px-3 md:px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors flex items-center justify-center gap-2 whitespace-nowrap text-sm md:text-base touch-manipulation"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 md:w-5 h-4 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            Добавить аккаунт
+            <span className="hidden sm:inline">Добавить аккаунт</span>
+            <span className="sm:hidden">Добавить</span>
           </button>
         </div>
 
         {/* Content */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
             {[...Array(6)].map((_, i) => (
               <SkeletonCard key={i} />
             ))}

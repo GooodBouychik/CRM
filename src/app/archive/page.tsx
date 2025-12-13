@@ -140,7 +140,7 @@ export default function ArchivePage() {
       title="Архив заказов"
       subtitle="Завершённые и отклонённые заказы"
     >
-      <div className="p-6">
+      <div className="p-3 md:p-6">
         {/* Filters */}
         <ArchiveFilters
           filters={filters}
@@ -150,7 +150,7 @@ export default function ArchivePage() {
 
         {/* Content */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
             {[...Array(6)].map((_, i) => (
               <SkeletonCard key={i} />
             ))}

@@ -126,16 +126,17 @@ export default function Home() {
       actions={
         <button
           onClick={() => setShowOrderForm(true)}
-          className="px-4 py-2 bg-accent-500 text-white rounded-xl hover:bg-accent-600 transition-all duration-200 shadow-lg shadow-accent-500/25 hover:shadow-accent-500/40"
+          className="px-3 md:px-4 py-1.5 md:py-2 text-sm md:text-base bg-accent-500 text-white rounded-xl hover:bg-accent-600 transition-all duration-200 shadow-lg shadow-accent-500/25 hover:shadow-accent-500/40 touch-manipulation"
         >
-          + Новый заказ
+          <span className="hidden sm:inline">+ Новый заказ</span>
+          <span className="sm:hidden">+ Заказ</span>
         </button>
       }
     >
       <div className="flex flex-col h-full">
         {/* Order form */}
         {showOrderForm && (
-          <div className="px-4 md:px-6 py-3 md:py-4 border-b border-surface-200 bg-surface-50">
+          <div className="px-3 md:px-6 py-2 md:py-4 border-b border-surface-200 bg-surface-50">
             <OrderForm onClose={() => setShowOrderForm(false)} />
           </div>
         )}
@@ -153,26 +154,26 @@ export default function Home() {
         {/* Order list */}
         <div className="flex-1 p-2 md:p-4 overflow-hidden">
           {loading ? (
-            <div className="grid grid-cols-1 gap-4 p-4">
+            <div className="grid grid-cols-1 gap-3 md:gap-4 p-2 md:p-4">
               {[...Array(5)].map((_, i) => (
                 <SkeletonCard key={i} />
               ))}
             </div>
           ) : processedOrders.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center animate-fade-in">
-              <span className="text-6xl mb-4">📋</span>
-              <h3 className="text-xl font-semibold text-gray-200 mb-2">
+            <div className="flex flex-col items-center justify-center h-full text-center animate-fade-in px-4">
+              <span className="text-5xl md:text-6xl mb-3 md:mb-4">📋</span>
+              <h3 className="text-lg md:text-xl font-semibold text-gray-200 mb-2">
                 {searchQuery || statusFilter || priorityFilter ? 'Заказы не найдены' : 'Нет заказов'}
               </h3>
-              <p className="text-gray-500 mb-6">
+              <p className="text-sm md:text-base text-gray-500 mb-4 md:mb-6">
                 {searchQuery || statusFilter || priorityFilter 
-                  ? 'Попробуйте изменить параметры фильтрации' 
-                  : 'Создайте первый заказ, чтобы начать работу'}
+                  ? 'Попробуйте изменить фильтры' 
+                  : 'Создайте первый заказ'}
               </p>
               {!searchQuery && !statusFilter && !priorityFilter && (
                 <button
                   onClick={() => setShowOrderForm(true)}
-                  className="px-4 py-2 bg-accent-500 text-white rounded-xl hover:bg-accent-600 transition-all duration-200"
+                  className="px-4 py-2 bg-accent-500 text-white rounded-xl hover:bg-accent-600 transition-all duration-200 touch-manipulation"
                 >
                   + Создать заказ
                 </button>

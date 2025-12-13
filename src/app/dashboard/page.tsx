@@ -149,27 +149,30 @@ function QuickStats({
   inProgressCount: number;
 }) {
   const stats = [
-    { label: 'Всего заказов', value: totalOrders, icon: '📋', color: 'text-blue-400' },
-    { label: 'Срочных', value: urgentCount, icon: '🔥', color: 'text-red-400' },
-    { label: 'Завершено сегодня', value: completedToday, icon: '✅', color: 'text-emerald-400' },
-    { label: 'В работе', value: inProgressCount, icon: '⚡', color: 'text-amber-400' },
+    { label: 'Всего', fullLabel: 'Всего заказов', value: totalOrders, icon: '📋', color: 'text-blue-400' },
+    { label: 'Срочных', fullLabel: 'Срочных', value: urgentCount, icon: '🔥', color: 'text-red-400' },
+    { label: 'Сегодня', fullLabel: 'Завершено сегодня', value: completedToday, icon: '✅', color: 'text-emerald-400' },
+    { label: 'В работе', fullLabel: 'В работе', value: inProgressCount, icon: '⚡', color: 'text-amber-400' },
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
       {stats.map((stat, index) => (
         <motion.div
           key={stat.label}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.05 }}
-          className="bg-surface-50 border border-surface-200 rounded-2xl p-4"
+          className="bg-surface-50 border border-surface-200 rounded-xl md:rounded-2xl p-3 md:p-4"
         >
-          <div className="flex items-center gap-2 mb-1">
-            <span>{stat.icon}</span>
-            <span className="text-xs text-gray-500">{stat.label}</span>
+          <div className="flex items-center gap-1.5 md:gap-2 mb-1">
+            <span className="text-sm md:text-base">{stat.icon}</span>
+            <span className="text-[10px] md:text-xs text-gray-500 truncate">
+              <span className="hidden sm:inline">{stat.fullLabel}</span>
+              <span className="sm:hidden">{stat.label}</span>
+            </span>
           </div>
-          <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
+          <p className={`text-xl md:text-2xl font-bold ${stat.color}`}>{stat.value}</p>
         </motion.div>
       ))}
     </div>
@@ -284,15 +287,15 @@ export default function Dashboard() {
 
   return (
     <AppLayout
-      title={`Привет, ${currentUser}! 👋`}
-      subtitle="Твой персональный дашборд"
+      title={`Привет, ${currentUser}!`}
+      subtitle="Твой дашборд"
       actions={
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
           {/* View mode toggle */}
           <div className="flex bg-surface-100 rounded-xl p-1">
             <button
               onClick={() => setViewMode('tasks')}
-              className={`px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
+              className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm rounded-lg transition-all duration-200 touch-manipulation ${
                 viewMode === 'tasks'
                   ? 'bg-accent-500 text-white shadow-lg shadow-accent-500/25'
                   : 'text-gray-400 hover:text-gray-200'
@@ -302,7 +305,7 @@ export default function Dashboard() {
             </button>
             <button
               onClick={() => setViewMode('orders')}
-              className={`px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
+              className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm rounded-lg transition-all duration-200 touch-manipulation ${
                 viewMode === 'orders'
                   ? 'bg-accent-500 text-white shadow-lg shadow-accent-500/25'
                   : 'text-gray-400 hover:text-gray-200'
@@ -316,19 +319,20 @@ export default function Dashboard() {
           {viewMode === 'tasks' && (
             <button
               onClick={() => setShowAllTasks(!showAllTasks)}
-              className={`px-4 py-2 text-sm rounded-xl border transition-all duration-200 ${
+              className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm rounded-xl border transition-all duration-200 touch-manipulation ${
                 showAllTasks
                   ? 'bg-violet-500/20 border-violet-500/50 text-violet-400'
                   : 'bg-surface-100 border-surface-200 text-gray-400 hover:text-gray-200'
               }`}
             >
-              {showAllTasks ? '👥 Все задачи' : '👤 Мои задачи'}
+              <span className="hidden sm:inline">{showAllTasks ? '👥 Все задачи' : '👤 Мои задачи'}</span>
+              <span className="sm:hidden">{showAllTasks ? '👥' : '👤'}</span>
             </button>
           )}
         </div>
       }
     >
-      <div className="p-6 overflow-auto h-full">
+      <div className="p-3 md:p-6 overflow-auto h-full">
         {/* Quick stats */}
         <QuickStats
           totalOrders={stats.totalOrders}
@@ -337,11 +341,11 @@ export default function Dashboard() {
           inProgressCount={stats.inProgressCount}
         />
 
-        <div className="mt-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="mt-4 md:mt-6 grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
           {/* Main content area */}
           <div className="lg:col-span-3">
             {viewMode === 'tasks' ? (
-              <div className="h-[600px]">
+              <div className="h-[400px] md:h-[600px]">
                 {tasksLoading ? (
                   <div className="flex gap-4 h-full">
                     <SkeletonKanbanColumn cards={3} />

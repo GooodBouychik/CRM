@@ -19,6 +19,7 @@ export interface NavItem {
 export interface SidebarProps {
   collapsed?: boolean;
   onToggle?: () => void;
+  isMobile?: boolean;
 }
 
 const navItems: NavItem[] = [
@@ -40,12 +41,12 @@ const userStyles: Record<ParticipantName, { gradient: string; emoji: string }> =
   'Саня': { gradient: 'from-cyan-500 to-blue-500', emoji: '🐺' },
 };
 
-export function Sidebar({ collapsed: controlledCollapsed, onToggle }: SidebarProps) {
+export function Sidebar({ collapsed: controlledCollapsed, onToggle, isMobile }: SidebarProps) {
   const pathname = usePathname();
   const { currentUser, logout } = useUser();
   const [internalCollapsed, setInternalCollapsed] = useState(false);
   
-  const collapsed = controlledCollapsed ?? internalCollapsed;
+  const collapsed = isMobile ? false : (controlledCollapsed ?? internalCollapsed);
   const userStyle = currentUser ? userStyles[currentUser] : null;
   
   const handleToggle = useCallback(() => {
@@ -69,13 +70,14 @@ export function Sidebar({ collapsed: controlledCollapsed, onToggle }: SidebarPro
         flex flex-col h-full bg-surface-50 border-r border-surface-200
         transition-all duration-300 ease-out
         ${collapsed ? 'w-20' : 'w-72'}
+        ${isMobile ? 'w-72 max-w-[85vw]' : ''}
       `}
     >
       {/* Header with logo */}
-      <div className="flex items-center justify-between p-5 border-b border-surface-200">
+      <div className="flex items-center justify-between p-4 md:p-5 border-b border-surface-200">
         {!collapsed && (
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="text-2xl font-black tracking-tight">
+          <Link href="/dashboard" onClick={isMobile ? onToggle : undefined} className="flex items-center gap-2">
+            <span className="text-xl md:text-2xl font-black tracking-tight">
               <span className="bg-gradient-to-r from-orange-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
                 Team
               </span>
@@ -87,18 +89,22 @@ export function Sidebar({ collapsed: controlledCollapsed, onToggle }: SidebarPro
           onClick={handleToggle}
           className={`
             p-2.5 rounded-xl text-gray-500 hover:text-gray-300
-            hover:bg-surface-100 transition-all duration-200
+            hover:bg-surface-100 transition-all duration-200 touch-manipulation
             ${collapsed ? 'mx-auto' : ''}
           `}
-          title={collapsed ? 'Развернуть' : 'Свернуть'}
+          title={isMobile ? 'Закрыть' : collapsed ? 'Развернуть' : 'Свернуть'}
         >
-          <motion.span
-            animate={{ rotate: collapsed ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
-            className="block"
-          >
-            ←
-          </motion.span>
+          {isMobile ? (
+            <span className="block text-xl">✕</span>
+          ) : (
+            <motion.span
+              animate={{ rotate: collapsed ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+              className="block"
+            >
+              ←
+            </motion.span>
+          )}
         </button>
       </div>
 
@@ -135,9 +141,10 @@ export function Sidebar({ collapsed: controlledCollapsed, onToggle }: SidebarPro
             <Link
               key={item.id}
               href={item.path}
+              onClick={isMobile ? onToggle : undefined}
               className={`
                 group relative flex items-center gap-3 px-4 py-3 rounded-xl
-                transition-all duration-200 ease-out
+                transition-all duration-200 ease-out touch-manipulation
                 ${active
                   ? 'bg-accent-500/10 text-accent-400'
                   : 'text-gray-400 hover:bg-surface-100 hover:text-gray-200'

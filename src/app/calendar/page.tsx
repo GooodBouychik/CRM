@@ -155,7 +155,7 @@ export default function CalendarPage() {
       title="Календарь"
       subtitle="Планирование подзадач по дням"
     >
-      <div className="p-6 h-full flex flex-col">
+      <div className="p-3 md:p-6 h-full flex flex-col">
         {/* Error state */}
         {error && (
           <div className="text-center py-12">

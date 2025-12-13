@@ -52,14 +52,14 @@ export function MobileOrderCard({
   return (
     <div
       className={`
-        bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700
-        p-4 mb-3 active:scale-[0.98] transition-transform touch-manipulation
+        bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700
+        p-3 mb-2 active:scale-[0.98] transition-transform touch-manipulation
         ${isSelected ? 'ring-2 ring-primary-500' : ''}
       `}
       onClick={onClick}
     >
       {/* Header row */}
-      <div className="flex items-start justify-between mb-2">
+      <div className="flex items-start justify-between mb-1.5">
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
@@ -69,33 +69,33 @@ export function MobileOrderCard({
               onSelect(e.target.checked);
             }}
             onClick={(e) => e.stopPropagation()}
-            className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 touch-manipulation"
+            className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 touch-manipulation"
           />
-          <span className="text-sm font-mono text-gray-500 dark:text-gray-400">
+          <span className="text-xs font-mono text-gray-500 dark:text-gray-400">
             #{String(order.orderNumber).padStart(3, '0')}
           </span>
-          <span className="text-lg">{PRIORITY_ICONS[order.priority]}</span>
+          <span className="text-sm">{PRIORITY_ICONS[order.priority]}</span>
         </div>
-        <span className={`px-2 py-1 text-xs font-medium rounded-full ${STATUS_COLORS[order.status]}`}>
+        <span className={`px-1.5 py-0.5 text-[10px] font-medium rounded-full ${STATUS_COLORS[order.status]}`}>
           {STATUS_LABELS[order.status]}
         </span>
       </div>
 
       {/* Title */}
-      <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1 line-clamp-2">
+      <h3 className="font-medium text-sm text-gray-900 dark:text-gray-100 mb-1 line-clamp-2">
         {order.title}
       </h3>
 
       {/* Client */}
       {order.clientName && (
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+        <p className="text-xs text-gray-600 dark:text-gray-400 mb-1.5 truncate">
           {order.clientName}
         </p>
       )}
 
       {/* Bottom row */}
-      <div className="flex items-center justify-between text-sm">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between text-xs">
+        <div className="flex items-center gap-2">
           {order.amount && (
             <span className="font-medium text-gray-700 dark:text-gray-300">
               {order.amount.toLocaleString('ru-RU')} ₽
@@ -107,40 +107,43 @@ export function MobileOrderCard({
             </span>
           )}
         </div>
-        <span className="text-gray-400 dark:text-gray-500 text-xs">
+        <span className="text-gray-400 dark:text-gray-500 text-[10px]">
           {format(new Date(order.updatedAt), 'd MMM HH:mm', { locale: ru })}
         </span>
       </div>
 
-      {/* Tags */}
-      {order.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1 mt-2">
-          {order.tags.slice(0, 3).map((tag) => (
-            <span
-              key={tag}
-              className="px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded"
-            >
-              {tag}
-            </span>
-          ))}
-          {order.tags.length > 3 && (
-            <span className="text-xs text-gray-400">+{order.tags.length - 3}</span>
-          )}
-        </div>
-      )}
+      {/* Tags + Assigned - combined row */}
+      {(order.tags.length > 0 || order.assignedTo.length > 0) && (
+        <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+          {/* Tags */}
+          <div className="flex flex-wrap gap-1 flex-1 min-w-0">
+            {order.tags.slice(0, 2).map((tag) => (
+              <span
+                key={tag}
+                className="px-1.5 py-0.5 text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded truncate max-w-[80px]"
+              >
+                {tag}
+              </span>
+            ))}
+            {order.tags.length > 2 && (
+              <span className="text-[10px] text-gray-400">+{order.tags.length - 2}</span>
+            )}
+          </div>
 
-      {/* Assigned avatars */}
-      {order.assignedTo.length > 0 && (
-        <div className="flex -space-x-1 mt-2">
-          {order.assignedTo.map((name) => (
-            <div
-              key={name}
-              className="w-6 h-6 rounded-full bg-primary-500 text-white text-xs flex items-center justify-center border-2 border-white dark:border-gray-800"
-              title={name}
-            >
-              {name[0]}
+          {/* Assigned avatars */}
+          {order.assignedTo.length > 0 && (
+            <div className="flex -space-x-1 flex-shrink-0 ml-2">
+              {order.assignedTo.slice(0, 3).map((name) => (
+                <div
+                  key={name}
+                  className="w-5 h-5 rounded-full bg-primary-500 text-white text-[10px] flex items-center justify-center border border-white dark:border-gray-800"
+                  title={name}
+                >
+                  {name[0]}
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       )}
     </div>

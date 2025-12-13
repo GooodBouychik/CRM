@@ -53,12 +53,12 @@ export default function ClientsPage() {
       title="Клиенты"
       subtitle="База клиентов и история работы"
     >
-      <div className="p-6">
+      <div className="p-3 md:p-6">
         {/* Search header */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-4 md:mb-6">
           <div className="relative flex-1">
             <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 md:w-5 h-4 md:h-5 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -74,8 +74,8 @@ export default function ClientsPage() {
               type="text"
               value={searchQuery}
               onChange={handleSearch}
-              placeholder="Поиск по имени клиента..."
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
+              placeholder="Поиск клиента..."
+              className="w-full pl-9 md:pl-10 pr-4 py-2 text-sm md:text-base rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors touch-manipulation"
             />
             {searchQuery && (
               <button
@@ -92,7 +92,7 @@ export default function ClientsPage() {
 
         {/* Content */}
         {initialLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
             {[...Array(6)].map((_, i) => (
               <SkeletonCard key={i} />
             ))}

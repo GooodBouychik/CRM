@@ -93,9 +93,9 @@ export default function ClientCardPage() {
       subtitle="Карточка клиента"
       breadcrumbs={breadcrumbs}
     >
-      <div className="p-6">
+      <div className="p-3 md:p-6">
         {loading ? (
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             <SkeletonCard />
             <SkeletonCard />
             <SkeletonCard />
@@ -111,7 +111,7 @@ export default function ClientCardPage() {
             </button>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             {/* Client Statistics */}
             {stats && <ClientStats stats={stats} />}
 
@@ -126,11 +126,11 @@ export default function ClientCardPage() {
             <ClientOrders orders={orders} onOrderDeleted={handleOrderDeleted} />
 
             {/* Delete Client Button */}
-            <div className="pt-4 border-t border-surface-200">
+            <div className="pt-3 md:pt-4 border-t border-surface-200">
               <button
                 onClick={handleDeleteClient}
                 disabled={deleting}
-                className="px-4 py-2 bg-red-500/10 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/20 transition-colors disabled:opacity-50 flex items-center gap-2"
+                className="px-3 md:px-4 py-2 text-sm md:text-base bg-red-500/10 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/20 transition-colors disabled:opacity-50 flex items-center gap-2 touch-manipulation"
               >
                 {deleting ? (
                   <>

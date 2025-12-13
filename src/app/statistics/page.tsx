@@ -69,49 +69,49 @@ export default function StatisticsPage() {
       title="Статистика"
       subtitle="Аналитика и показатели бизнеса"
     >
-      <div className="p-6 overflow-auto h-full">
+      <div className="p-3 md:p-6 overflow-auto h-full">
         {/* Period filter */}
-        <div className="mb-6">
+        <div className="mb-4 md:mb-6">
           <PeriodFilter value={period} onChange={handlePeriodChange} />
         </div>
 
         {/* Overview stats */}
         {overview && !loading && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-            <div className="bg-surface-50 border border-surface-200 rounded-2xl p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <span>📋</span>
-                <span className="text-xs text-gray-500">Всего заказов</span>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 md:gap-3 mb-4 md:mb-6">
+            <div className="bg-surface-50 border border-surface-200 rounded-xl md:rounded-2xl p-3 md:p-4">
+              <div className="flex items-center gap-1.5 md:gap-2 mb-1">
+                <span className="text-sm md:text-base">📋</span>
+                <span className="text-[10px] md:text-xs text-gray-500">Всего</span>
               </div>
-              <p className="text-2xl font-bold text-gray-100">{overview.totalOrders}</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-100">{overview.totalOrders}</p>
             </div>
-            <div className="bg-surface-50 border border-surface-200 rounded-2xl p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <span>⚡</span>
-                <span className="text-xs text-gray-500">Активных</span>
+            <div className="bg-surface-50 border border-surface-200 rounded-xl md:rounded-2xl p-3 md:p-4">
+              <div className="flex items-center gap-1.5 md:gap-2 mb-1">
+                <span className="text-sm md:text-base">⚡</span>
+                <span className="text-[10px] md:text-xs text-gray-500">Активных</span>
               </div>
-              <p className="text-2xl font-bold text-blue-400">{overview.activeOrders}</p>
+              <p className="text-xl md:text-2xl font-bold text-blue-400">{overview.activeOrders}</p>
             </div>
-            <div className="bg-surface-50 border border-surface-200 rounded-2xl p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <span>✅</span>
-                <span className="text-xs text-gray-500">Завершённых</span>
+            <div className="bg-surface-50 border border-surface-200 rounded-xl md:rounded-2xl p-3 md:p-4">
+              <div className="flex items-center gap-1.5 md:gap-2 mb-1">
+                <span className="text-sm md:text-base">✅</span>
+                <span className="text-[10px] md:text-xs text-gray-500">Готово</span>
               </div>
-              <p className="text-2xl font-bold text-emerald-400">{overview.completedOrders}</p>
+              <p className="text-xl md:text-2xl font-bold text-emerald-400">{overview.completedOrders}</p>
             </div>
-            <div className="bg-surface-50 border border-surface-200 rounded-2xl p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <span>🆕</span>
-                <span className="text-xs text-gray-500">Новых</span>
+            <div className="bg-surface-50 border border-surface-200 rounded-xl md:rounded-2xl p-3 md:p-4">
+              <div className="flex items-center gap-1.5 md:gap-2 mb-1">
+                <span className="text-sm md:text-base">🆕</span>
+                <span className="text-[10px] md:text-xs text-gray-500">Новых</span>
               </div>
-              <p className="text-2xl font-bold text-amber-400">{overview.statusDistribution.new}</p>
+              <p className="text-xl md:text-2xl font-bold text-amber-400">{overview.statusDistribution.new}</p>
             </div>
-            <div className="bg-surface-50 border border-surface-200 rounded-2xl p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <span>🔍</span>
-                <span className="text-xs text-gray-500">На проверке</span>
+            <div className="bg-surface-50 border border-surface-200 rounded-xl md:rounded-2xl p-3 md:p-4 col-span-2 sm:col-span-1">
+              <div className="flex items-center gap-1.5 md:gap-2 mb-1">
+                <span className="text-sm md:text-base">🔍</span>
+                <span className="text-[10px] md:text-xs text-gray-500">Проверка</span>
               </div>
-              <p className="text-2xl font-bold text-violet-400">{overview.statusDistribution.review}</p>
+              <p className="text-xl md:text-2xl font-bold text-violet-400">{overview.statusDistribution.review}</p>
             </div>
           </div>
         )}
