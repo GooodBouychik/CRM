@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { AppLayout } from '@/components/layout';
 import { ClientList } from '@/components/clients';
-import { EmptyState } from '@/components/ui/EmptyState';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 import { fetchClients, type ClientSummary } from '@/lib/api';
 
@@ -12,31 +11,27 @@ export default function ClientsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const isFirstLoad = useRef(true);
 
-  // Fetch clients on mount
+  // Debounced search - handles both initial load and search
   useEffect(() => {
-    loadClients();
-  }, []);
-
-  const loadClients = async (search?: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchClients(search);
-      setClients(data);
-    } catch (err) {
-      setError('Не удалось загрузить список клиентов');
-      console.error('Failed to fetch clients:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Debounced search
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      loadClients(searchQuery || undefined);
-    }, 300);
+    const delay = isFirstLoad.current ? 0 : 300;
+    isFirstLoad.current = false;
+    
+    const timer = setTimeout(async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchClients(searchQuery || undefined);
+        setClients(data);
+      } catch (err) {
+        setError('Не удалось загрузить список клиентов');
+        console.error('Failed to fetch clients:', err);
+      } finally {
+        setLoading(false);
+      }
+    }, delay);
+    
     return () => clearTimeout(timer);
   }, [searchQuery]);
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useOrderStore } from '@/stores/orderStore';
 import { useUser } from '@/providers/UserProvider';
@@ -9,7 +9,8 @@ import { AppLayout } from '@/components/layout';
 import { sortOrders, filterOrders } from '@/lib/orderUtils';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useToast } from '@/components/ui/Toast';
-import { deleteOrder } from '@/lib/api';
+import { fetchOrders, deleteOrder } from '@/lib/api';
+import { SkeletonCard } from '@/components/ui/Skeleton';
 import type { Order, OrderStatus, Priority } from '@/types';
 
 export default function Home() {
@@ -17,8 +18,30 @@ export default function Home() {
   const isMobile = useIsMobile();
   const { showToast } = useToast();
   const { currentUser } = useUser();
-  const { orders: ordersMap, selectOrder, deleteOrder: deleteOrderFromStore } = useOrderStore();
+  const { orders: ordersMap, selectOrder, deleteOrder: deleteOrderFromStore, setOrders } = useOrderStore();
   const orders = useMemo(() => Object.values(ordersMap), [ordersMap]);
+  const [loading, setLoading] = useState(true);
+
+  // Load orders on mount
+  useEffect(() => {
+    let mounted = true;
+    const loadOrders = async () => {
+      try {
+        const data = await fetchOrders();
+        if (mounted) {
+          setOrders(data);
+        }
+      } catch (err) {
+        console.error('Failed to load orders:', err);
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+    loadOrders();
+    return () => { mounted = false; };
+  }, [setOrders]);
 
   // Selection state
   const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(new Set());
@@ -129,7 +152,13 @@ export default function Home() {
 
         {/* Order list */}
         <div className="flex-1 p-2 md:p-4 overflow-hidden">
-          {processedOrders.length === 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-1 gap-4 p-4">
+              {[...Array(5)].map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
+          ) : processedOrders.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center animate-fade-in">
               <span className="text-6xl mb-4">📋</span>
               <h3 className="text-xl font-semibold text-gray-200 mb-2">
@@ -168,7 +197,7 @@ export default function Home() {
               sortDirection={sortDirection}
               onSort={handleSort}
             />
-          )}
+          ))}
         </div>
       </div>
     </AppLayout>
