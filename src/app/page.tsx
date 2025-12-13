@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useOrderStore } from '@/stores/orderStore';
 import { useUser } from '@/providers/UserProvider';
@@ -20,7 +20,11 @@ export default function Home() {
   const { currentUser } = useUser();
   const { orders: ordersMap, selectOrder, deleteOrder: deleteOrderFromStore, setOrders } = useOrderStore();
   const orders = useMemo(() => Object.values(ordersMap), [ordersMap]);
-  const [loading, setLoading] = useState(true);
+  
+  // Loading states like clients page
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const isFirstLoad = useRef(true);
 
   // Load orders on mount
   useEffect(() => {
@@ -35,7 +39,8 @@ export default function Home() {
         console.error('Failed to load orders:', err);
       } finally {
         if (mounted) {
-          setLoading(false);
+          setInitialLoading(false);
+          isFirstLoad.current = false;
         }
       }
     };
@@ -126,17 +131,17 @@ export default function Home() {
       actions={
         <button
           onClick={() => setShowOrderForm(true)}
-          className="px-3 md:px-4 py-1.5 md:py-2 text-sm md:text-base bg-accent-500 text-white rounded-xl hover:bg-accent-600 transition-all duration-200 shadow-lg shadow-accent-500/25 hover:shadow-accent-500/40 touch-manipulation"
+          className="px-3 md:px-4 py-1.5 md:py-2 text-sm md:text-base bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-all duration-200 shadow-lg shadow-primary/25 hover:shadow-primary/40 touch-manipulation"
         >
           <span className="hidden sm:inline">+ Новый заказ</span>
           <span className="sm:hidden">+ Заказ</span>
         </button>
       }
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full bg-background">
         {/* Order form */}
         {showOrderForm && (
-          <div className="px-3 md:px-6 py-2 md:py-4 border-b border-surface-200 bg-surface-50">
+          <div className="px-3 md:px-6 py-2 md:py-4 border-b border-border bg-card">
             <OrderForm onClose={() => setShowOrderForm(false)} />
           </div>
         )}
@@ -152,9 +157,9 @@ export default function Home() {
         />
 
         {/* Order list */}
-        <div className="flex-1 p-2 md:p-4 overflow-hidden bg-background">
-          {loading ? (
-            <div className="grid grid-cols-1 gap-3 md:gap-4 p-2 md:p-4 bg-background">
+        <div className="flex-1 p-2 md:p-4 overflow-hidden">
+          {initialLoading ? (
+            <div className="grid grid-cols-1 gap-3 md:gap-4 p-2 md:p-4">
               {[...Array(5)].map((_, i) => (
                 <SkeletonCard key={i} />
               ))}
@@ -162,10 +167,10 @@ export default function Home() {
           ) : processedOrders.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center animate-fade-in px-4">
               <span className="text-5xl md:text-6xl mb-3 md:mb-4">📋</span>
-              <h3 className="text-lg md:text-xl font-semibold text-gray-200 mb-2">
+              <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2">
                 {searchQuery || statusFilter || priorityFilter ? 'Заказы не найдены' : 'Нет заказов'}
               </h3>
-              <p className="text-sm md:text-base text-gray-500 mb-4 md:mb-6">
+              <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6">
                 {searchQuery || statusFilter || priorityFilter 
                   ? 'Попробуйте изменить фильтры' 
                   : 'Создайте первый заказ'}
@@ -173,31 +178,35 @@ export default function Home() {
               {!searchQuery && !statusFilter && !priorityFilter && (
                 <button
                   onClick={() => setShowOrderForm(true)}
-                  className="px-4 py-2 bg-accent-500 text-white rounded-xl hover:bg-accent-600 transition-all duration-200 touch-manipulation"
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-all duration-200 touch-manipulation"
                 >
                   + Создать заказ
                 </button>
               )}
             </div>
-          ) : isMobile ? (
-            <MobileOrderList
-              orders={processedOrders}
-              selectedOrderIds={selectedOrderIds}
-              onSelectOrder={handleSelectOrder}
-              onOrderClick={handleOrderClick}
-            />
           ) : (
-            <OrderTable
-              orders={processedOrders}
-              selectedOrderIds={selectedOrderIds}
-              onSelectOrder={handleSelectOrder}
-              onSelectAll={handleSelectAll}
-              onOrderClick={handleOrderClick}
-              onDeleteOrder={handleDeleteOrder}
-              sortColumn={sortColumn}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-            />
+            <div className={refreshing ? 'opacity-50 transition-opacity' : 'animate-fade-in'}>
+              {isMobile ? (
+                <MobileOrderList
+                  orders={processedOrders}
+                  selectedOrderIds={selectedOrderIds}
+                  onSelectOrder={handleSelectOrder}
+                  onOrderClick={handleOrderClick}
+                />
+              ) : (
+                <OrderTable
+                  orders={processedOrders}
+                  selectedOrderIds={selectedOrderIds}
+                  onSelectOrder={handleSelectOrder}
+                  onSelectAll={handleSelectAll}
+                  onOrderClick={handleOrderClick}
+                  onDeleteOrder={handleDeleteOrder}
+                  sortColumn={sortColumn}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+              )}
+            </div>
           )}
         </div>
       </div>

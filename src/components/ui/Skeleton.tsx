@@ -11,7 +11,7 @@ export interface SkeletonProps {
 export function Skeleton({ className = '' }: SkeletonProps) {
   return (
     <div 
-      className={`animate-pulse bg-gray-200 dark:bg-gray-700 rounded ${className}`}
+      className={`animate-pulse bg-muted rounded ${className}`}
       aria-hidden="true"
     />
   );
@@ -35,7 +35,7 @@ export function SkeletonAvatar({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
 // Card skeleton
 export function SkeletonCard({ className = '' }: { className?: string }) {
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 ${className}`}>
+    <div className={`bg-card rounded-xl p-4 border border-border ${className}`}>
       <div className="flex items-start gap-3">
         <SkeletonAvatar size="sm" />
         <div className="flex-1 space-y-2">
