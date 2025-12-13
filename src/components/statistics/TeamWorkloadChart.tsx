@@ -51,21 +51,21 @@ function CustomTooltip({ active, payload, label }: any) {
   if (!data) return null;
 
   return (
-    <div className="bg-surface-100 border border-surface-200 rounded-xl p-3 shadow-xl">
-      <p className="text-gray-100 font-semibold mb-2">{label}</p>
+    <div className="bg-card border border-border rounded-xl p-3 shadow-xl">
+      <p className="text-foreground font-semibold mb-2">{label}</p>
       <div className="space-y-1 text-sm">
-        <p className="text-gray-400">
+        <p className="text-muted-foreground">
           Активных заказов: <span className="text-blue-400 font-medium">{data.activeOrders}</span>
         </p>
-        <p className="text-gray-400">
+        <p className="text-muted-foreground">
           Часов работы: <span className="text-amber-400 font-medium">{data.totalEstimatedHours}ч</span>
         </p>
-        <div className="pt-2 border-t border-surface-200 mt-2">
-          <p className="text-gray-500 text-xs mb-1">По статусам:</p>
+        <div className="pt-2 border-t border-border mt-2">
+          <p className="text-muted-foreground text-xs mb-1">По статусам:</p>
           {Object.entries(data.ordersByStatus).map(([status, count]) => {
             const countNum = count as number;
             return countNum > 0 && (
-              <p key={status} className="text-gray-400 text-xs">
+              <p key={status} className="text-muted-foreground text-xs">
                 {statusLabels[status]}: <span className="font-medium">{countNum}</span>
               </p>
             );
@@ -86,10 +86,11 @@ export function TeamWorkloadChart({ data, loading }: TeamWorkloadChartProps) {
   }, [data]);
 
   // Calculate totals
+  // Note: totalActive shows max per person since orders can be assigned to multiple people
   const totals = useMemo(() => {
-    const totalActive = data.reduce((sum, item) => sum + item.activeOrders, 0);
+    const maxActive = data.length > 0 ? Math.max(...data.map(item => item.activeOrders)) : 0;
     const totalHours = data.reduce((sum, item) => sum + item.totalEstimatedHours, 0);
-    return { totalActive, totalHours };
+    return { maxActive, totalHours };
   }, [data]);
 
   if (loading) {
@@ -114,12 +115,12 @@ export function TeamWorkloadChart({ data, loading }: TeamWorkloadChartProps) {
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-surface-100 rounded-xl p-4">
-          <p className="text-xs text-gray-500 mb-1">Активных заказов</p>
-          <p className="text-xl font-bold text-blue-400">{totals.totalActive}</p>
+        <div className="bg-secondary rounded-xl p-4">
+          <p className="text-xs text-muted-foreground mb-1">Макс. у участника</p>
+          <p className="text-xl font-bold text-blue-400">{totals.maxActive}</p>
         </div>
-        <div className="bg-surface-100 rounded-xl p-4">
-          <p className="text-xs text-gray-500 mb-1">Часов работы</p>
+        <div className="bg-secondary rounded-xl p-4">
+          <p className="text-xs text-muted-foreground mb-1">Часов работы</p>
           <p className="text-xl font-bold text-amber-400">{totals.totalHours}ч</p>
         </div>
       </div>
