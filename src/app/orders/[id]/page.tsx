@@ -391,10 +391,11 @@ export default function OrderDetailPage() {
     if (!confirmed) return;
     
     try {
+      // Redirect first to prevent fetching data for deleted order
+      router.push('/');
       await deleteOrder(orderId);
       deleteOrderFromStore(orderId);
       showToast('Заказ удалён', { type: 'success' });
-      router.push('/');
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Ошибка удаления', { type: 'error' });
     }
