@@ -98,30 +98,46 @@ export function OrderTable({
     </th>
   );
 
+  // Column widths for consistent alignment
+  const colWidths = {
+    id: 'w-[70px]',
+    client: 'w-[120px]',
+    title: 'w-[200px] min-w-[200px]',
+    amount: 'w-[100px]',
+    status: 'w-[100px]',
+    priority: 'w-[100px]',
+    viewers: 'w-[80px]',
+    comments: 'w-[50px]',
+    deadline: 'w-[90px]',
+    updated: 'w-[110px]',
+    tags: 'w-[150px]',
+    actions: 'w-[50px]',
+  };
+
   return (
     <div className="flex flex-col h-full border border-border rounded-xl overflow-hidden bg-card">
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-border">
-          <thead className="bg-card sticky top-0 z-10">
+      <div className="overflow-x-auto flex-shrink-0">
+        <table className="w-full table-fixed">
+          <thead className="bg-card">
             <tr>
-              <SortableHeader column="orderNumber" label="ID" className="w-20" />
-              <SortableHeader column="clientName" label="Клиент" className="w-32" />
-              <SortableHeader column="title" label="Название" className="min-w-[200px]" />
-              <SortableHeader column="amount" label="Сумма" className="w-28" />
-              <SortableHeader column="status" label="Статус" className="w-28" />
-              <SortableHeader column="priority" label="Приоритет" className="w-28" />
-              <th className="px-3 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-24">
-                Просмотр
+              <SortableHeader column="orderNumber" label="ID" className={colWidths.id} />
+              <SortableHeader column="clientName" label="Клиент" className={colWidths.client} />
+              <SortableHeader column="title" label="Название" className={colWidths.title} />
+              <SortableHeader column="amount" label="Сумма" className={colWidths.amount} />
+              <SortableHeader column="status" label="Статус" className={colWidths.status} />
+              <SortableHeader column="priority" label="Приоритет" className={colWidths.priority} />
+              <th className={`px-3 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider ${colWidths.viewers}`}>
+                👁
               </th>
-              <th className="px-3 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-20">
+              <th className={`px-3 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider ${colWidths.comments}`}>
                 💬
               </th>
-              <SortableHeader column="dueDate" label="Дедлайн" className="w-28" />
-              <SortableHeader column="updatedAt" label="Обновлено" className="w-32" />
-              <th className="px-3 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <SortableHeader column="dueDate" label="Дедлайн" className={colWidths.deadline} />
+              <SortableHeader column="updatedAt" label="Обновлено" className={colWidths.updated} />
+              <th className={`px-3 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider ${colWidths.tags}`}>
                 Теги
               </th>
-              <th className="px-3 py-3 w-12"></th>
+              <th className={`px-3 py-3 ${colWidths.actions}`}></th>
             </tr>
           </thead>
         </table>
@@ -154,7 +170,7 @@ export function OrderTable({
                   transform: `translateY(${virtualRow.start}px)`,
                 }}
               >
-                <table className="min-w-full">
+                <table className="w-full table-fixed">
                   <tbody>
                     <tr
                       className={`hover:bg-accent/50 cursor-pointer border-b border-border ${
@@ -162,24 +178,24 @@ export function OrderTable({
                       }`}
                       onClick={() => onOrderClick(order)}
                     >
-                      <td className="px-3 py-3 w-20 text-sm font-mono text-foreground">
+                      <td className={`px-3 py-3 text-sm font-mono text-foreground ${colWidths.id}`}>
                         #{String(order.orderNumber).padStart(3, '0')}
                       </td>
-                      <td className="px-3 py-3 w-32 text-sm text-muted-foreground truncate">
+                      <td className={`px-3 py-3 text-sm text-muted-foreground truncate ${colWidths.client}`}>
                         {order.clientName || '—'}
                       </td>
-                      <td className="px-3 py-3 min-w-[200px] text-sm font-medium text-foreground truncate">
+                      <td className={`px-3 py-3 text-sm font-medium text-foreground truncate ${colWidths.title}`}>
                         {order.title}
                       </td>
-                      <td className="px-3 py-3 w-28 text-sm text-muted-foreground">
+                      <td className={`px-3 py-3 text-sm text-muted-foreground ${colWidths.amount}`}>
                         {order.amount ? `${order.amount.toLocaleString('ru-RU')} ₽` : '—'}
                       </td>
-                      <td className="px-3 py-3 w-28">
+                      <td className={`px-3 py-3 ${colWidths.status}`}>
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full bg-status-${order.status.replace('_', '-')}/20 text-status-${order.status.replace('_', '-')}`}>
                           {STATUS_LABELS[order.status]}
                         </span>
                       </td>
-                      <td className="px-3 py-3 w-28">
+                      <td className={`px-3 py-3 ${colWidths.priority}`}>
                         <span className={`inline-flex items-center gap-1 text-xs font-medium text-priority-${order.priority}`}>
                           {order.priority === 'high' && '🔴'}
                           {order.priority === 'medium' && '🟡'}
@@ -187,53 +203,53 @@ export function OrderTable({
                           {PRIORITY_LABELS[order.priority]}
                         </span>
                       </td>
-                      <td className="px-3 py-3 w-24">
+                      <td className={`px-3 py-3 ${colWidths.viewers}`}>
                         <div className="flex -space-x-1">
                           {viewers.slice(0, 3).map((viewer, i) => (
                             <div
                               key={i}
-                              className="w-6 h-6 rounded-full bg-primary-500 text-white text-xs flex items-center justify-center border-2 border-white dark:border-gray-900"
+                              className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center border border-card"
                               title={viewer}
                             >
                               {viewer[0]}
                             </div>
                           ))}
                           {viewers.length > 3 && (
-                            <div className="w-6 h-6 rounded-full bg-gray-400 text-white text-xs flex items-center justify-center border-2 border-white dark:border-gray-900">
+                            <div className="w-5 h-5 rounded-full bg-muted text-muted-foreground text-xs flex items-center justify-center border border-card">
                               +{viewers.length - 3}
                             </div>
                           )}
                         </div>
                       </td>
-                      <td className="px-3 py-3 w-20 text-sm text-muted-foreground">
+                      <td className={`px-3 py-3 text-sm text-muted-foreground ${colWidths.comments}`}>
                         0
                       </td>
-                      <td className={`px-3 py-3 w-28 text-sm ${deadlineClass}`}>
+                      <td className={`px-3 py-3 text-sm ${deadlineClass} ${colWidths.deadline}`}>
                         {order.dueDate ? format(new Date(order.dueDate), 'd MMM', { locale: ru }) : '—'}
                       </td>
-                      <td className="px-3 py-3 w-32 text-sm text-muted-foreground">
+                      <td className={`px-3 py-3 text-sm text-muted-foreground ${colWidths.updated}`}>
                         {format(new Date(order.updatedAt), 'd MMM HH:mm', { locale: ru })}
                       </td>
-                      <td className="px-3 py-3">
-                        <div className="flex flex-wrap gap-1">
-                          {order.tags.slice(0, 3).map((tag) => (
+                      <td className={`px-3 py-3 ${colWidths.tags}`}>
+                        <div className="flex flex-wrap gap-1 overflow-hidden">
+                          {order.tags.slice(0, 2).map((tag) => (
                             <span
                               key={tag}
-                              className="inline-flex px-2 py-0.5 text-xs bg-muted text-muted-foreground rounded"
+                              className="inline-flex px-1.5 py-0.5 text-xs bg-muted text-muted-foreground rounded truncate max-w-[60px]"
                             >
                               {tag}
                             </span>
                           ))}
-                          {order.tags.length > 3 && (
-                            <span className="text-xs text-muted-foreground">+{order.tags.length - 3}</span>
+                          {order.tags.length > 2 && (
+                            <span className="text-xs text-muted-foreground">+{order.tags.length - 2}</span>
                           )}
                         </div>
                       </td>
-                      <td className="px-3 py-3 w-12" onClick={(e) => e.stopPropagation()}>
+                      <td className={`px-3 py-3 ${colWidths.actions}`} onClick={(e) => e.stopPropagation()}>
                         {onDeleteOrder && (
                           <button
                             onClick={() => onDeleteOrder(order)}
-                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                            className="p-1 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded transition-colors"
                             title="Удалить"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -133,12 +133,13 @@ export function TeamWorkloadChart({ data, loading }: TeamWorkloadChartProps) {
           <p className="text-sm text-gray-500">Назначьте заказы участникам команды</p>
         </div>
       ) : (
-        <div className="h-64">
+        <div className="h-64 bg-transparent">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
               layout="vertical"
               margin={{ top: 10, right: 10, left: 60, bottom: 0 }}
+              style={{ backgroundColor: 'transparent' }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
               <XAxis
