@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef, type TouchEvent } from 'react
 import { useParams, useRouter } from 'next/navigation';
 import { useOrderStore } from '@/stores/orderStore';
 import { useConflictStore } from '@/stores/conflictStore';
-import { fetchOrder, updateOrder, type UpdateOrderInput } from '@/lib/api';
+import { fetchOrder, updateOrder, deleteOrder, type UpdateOrderInput } from '@/lib/api';
 import { useToast } from '@/components/ui/Toast';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -191,7 +191,7 @@ export default function OrderDetailPage() {
   const router = useRouter();
   const { showToast } = useToast();
   const isMobile = useIsMobile();
-  const { orders, updateOrder: updateOrderInStore } = useOrderStore();
+  const { orders, updateOrder: updateOrderInStore, deleteOrder: deleteOrderFromStore } = useOrderStore();
   const { 
     setFieldEditing, 
     clearFieldEditing, 
@@ -384,6 +384,22 @@ export default function OrderDetailPage() {
     await handleFieldUpdate('assignedTo', newAssignedTo);
   };
 
+  const handleDeleteOrder = async () => {
+    if (!order) return;
+    
+    const confirmed = window.confirm(`Удалить заказ #${String(order.orderNumber).padStart(3, '0')} "${order.title}"?`);
+    if (!confirmed) return;
+    
+    try {
+      await deleteOrder(orderId);
+      deleteOrderFromStore(orderId);
+      showToast('Заказ удалён', { type: 'success' });
+      router.push('/');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Ошибка удаления', { type: 'error' });
+    }
+  };
+
   // Get active conflict for this order
   const activeConflict = conflicts.find((c) => c.orderId === orderId);
 
@@ -488,6 +504,16 @@ export default function OrderDetailPage() {
               <option key={value} value={value}>{label}</option>
             ))}
           </select>
+          {/* Delete button */}
+          <button
+            onClick={handleDeleteOrder}
+            className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+            title="Удалить заказ"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
         </div>
       </header>
 

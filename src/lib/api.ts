@@ -108,6 +108,17 @@ export async function updateOrder(id: string, input: UpdateOrderInput): Promise<
   return parseOrderDates(order);
 }
 
+export async function deleteOrder(id: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/orders/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok && response.status !== 204) {
+    const error: ApiError = await response.json();
+    throw new Error(error.message || 'Failed to delete order');
+  }
+}
+
 // Attachment types and API
 export interface Attachment {
   id: string;
